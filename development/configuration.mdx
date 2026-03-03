@@ -1,0 +1,305 @@
+---
+title: Configuration
+description: Configure Next.js, Tailwind CSS, TypeScript, and other tools for your portfolio
+---
+
+This guide covers all configuration options available in the portfolio website, including Next.js settings, TypeScript paths, Tailwind CSS, and component libraries.
+
+## Next.js configuration
+
+The Next.js configuration is located at `next.config.ts` and includes security headers and MDX support.
+
+### Page extensions
+
+The project supports multiple file types as pages:
+
+```typescript next.config.ts
+pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"]
+```
+
+This allows you to create pages using JavaScript, TypeScript, or MDX files.
+
+### Security headers
+
+The application includes comprehensive security headers for all routes:
+
+```typescript next.config.ts
+async headers() {
+  return [
+    {
+      source: "/:path*",
+      headers: [
+        {
+          key: "X-DNS-Prefetch-Control",
+          value: "on",
+        },
+        {
+          key: "Strict-Transport-Security",
+          value: "max-age=63072000; includeSubDomains; preload",
+        },
+        {
+          key: "X-Frame-Options",
+          value: "SAMEORIGIN",
+        },
+        {
+          key: "X-Content-Type-Options",
+          value: "nosniff",
+        },
+        {
+          key: "X-XSS-Protection",
+          value: "1: mode=block",
+        },
+        {
+          key: "Referrer-Policy",
+          value: "strict-origin-when-cross-origin",
+        },
+        {
+          key: "Permissions-Policy",
+          value: "camera=(), microphone=(), geolocation=()",
+        },
+      ],
+    },
+  ];
+}
+```
+
+<Info>
+These headers improve security by preventing XSS attacks, clickjacking, and enforcing HTTPS.
+</Info>
+
+## TypeScript configuration
+
+The TypeScript configuration (`tsconfig.json`) uses strict mode and modern ES features.
+
+### Path aliases
+
+The project uses the `@/*` path alias for cleaner imports:
+
+```json tsconfig.json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}
+```
+
+**Usage example:**
+
+```typescript
+// Instead of:
+import { Button } from '../../../components/ui/button'
+
+// You can use:
+import { Button } from '@/components/ui/button'
+```
+
+### Compiler options
+
+Key TypeScript settings:
+
+| Option | Value | Purpose |
+|--------|-------|----------|
+| `target` | ES2017 | JavaScript version target |
+| `strict` | true | Enable all strict type checking |
+| `jsx` | react-jsx | Use new JSX transform |
+| `moduleResolution` | bundler | Modern module resolution |
+| `skipLibCheck` | true | Skip type checking of declaration files |
+
+## Tailwind CSS configuration
+
+The project uses **Tailwind CSS 4** with PostCSS integration.
+
+### PostCSS setup
+
+The PostCSS configuration (`postcss.config.mjs`) is minimal:
+
+```javascript postcss.config.mjs
+const config = {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+
+export default config;
+```
+
+### Global styles
+
+Tailwind is imported in `src/styles/globals.css` along with custom theme variables:
+
+```css src/styles/globals.css
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "Inter", sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  /* Color variables for theming */
+}
+```
+
+<Note>
+The project uses Tailwind CSS 4's new `@theme` directive for inline theme configuration instead of a separate `tailwind.config.ts` file.
+</Note>
+
+### Custom fonts
+
+The Inter variable font is loaded with font-display swap for optimal performance:
+
+```css
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/Inter/Inter-VariableFont_opsz,wght.ttf") format("truetype");
+}
+```
+
+Place your font files in the `public/fonts/` directory.
+
+## shadcn/ui configuration
+
+The project uses shadcn/ui components with the following configuration (`components.json`):
+
+```json components.json
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "app/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
+  }
+}
+```
+
+### Component aliases
+
+The following path aliases are configured for shadcn/ui:
+
+- `@/components` - General components
+- `@/components/ui` - UI primitives
+- `@/lib` - Utility libraries
+- `@/lib/utils` - Utility functions
+- `@/hooks` - React hooks
+
+### Adding components
+
+Add new shadcn/ui components using:
+
+<CodeGroup>
+  ```bash pnpm
+  pnpm dlx shadcn@latest add button
+  ```
+
+  ```bash npx
+  npx shadcn@latest add button
+  ```
+</CodeGroup>
+
+## Environment variables
+
+The project currently doesn't require environment variables for basic functionality. If you add features that need environment variables, create a `.env.local` file:
+
+```bash .env.local
+# Analytics
+NEXT_PUBLIC_VERCEL_ANALYTICS_ID=your_analytics_id
+
+# Add your variables here
+```
+
+<Warning>
+Never commit `.env.local` or `.env` files to version control. Add them to `.gitignore`.
+</Warning>
+
+### Using environment variables
+
+Access environment variables in your code:
+
+```typescript
+// Public variables (accessible in browser)
+const analyticsId = process.env.NEXT_PUBLIC_VERCEL_ANALYTICS_ID
+
+// Server-side only variables
+const apiKey = process.env.API_SECRET_KEY
+```
+
+<Info>
+Variables prefixed with `NEXT_PUBLIC_` are exposed to the browser. Never use this prefix for secrets.
+</Info>
+
+## Git hooks with Husky
+
+The project uses Husky for Git hooks. The precommit hook automatically generates a resume PDF:
+
+```json package.json
+{
+  "scripts": {
+    "prepare": "husky",
+    "precommit": "node scripts/generate-resume-pdf.js"
+  }
+}
+```
+
+### Customizing hooks
+
+Edit `.husky/pre-commit` to modify the precommit behavior or add additional checks like linting:
+
+```bash .husky/pre-commit
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+node scripts/generate-resume-pdf.js
+pnpm lint
+```
+
+## MDX configuration
+
+MDX content is processed using `next-mdx-remote` with the following plugins:
+
+- **remark-gfm** - GitHub Flavored Markdown support (tables, strikethrough, etc.)
+- **rehype-slug** - Auto-generate heading IDs for anchor links
+
+### Using MDX
+
+Create `.mdx` files with front matter:
+
+```mdx
+---
+title: My Blog Post
+date: 2026-03-03
+---
+
+# Hello World
+
+This is **MDX** content!
+```
+
+## Next steps
+
+Learn how to deploy your configured portfolio:
+
+<Card title="Deployment" icon="rocket" href="/development/deployment">
+  Deploy to Vercel and other platforms
+</Card>

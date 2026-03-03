@@ -1,0 +1,146 @@
+---
+title: CodeMark
+description: Jupyter-like notebook for JavaScript and React with live in-browser code execution using esbuild-WASM
+---
+
+CodeMark is a Jupyter-style notebook environment for JavaScript and React that features live in-browser code execution powered by esbuild-WASM. Write, execute, and visualize JavaScript and React code directly in your browser without any server-side execution.
+
+<Info>
+  This project showcases advanced browser-based code execution using WebAssembly, demonstrating the power of client-side bundling and module resolution.
+</Info>
+
+## Overview
+
+CodeMark provides an interactive coding environment similar to Jupyter notebooks but designed specifically for JavaScript and React. The entire bundling and execution pipeline runs in the browser using esbuild compiled to WebAssembly.
+
+**Live demo**: [Try CodeMark](https://codemark-ten.vercel.app)
+
+**Source code**: [View on GitHub](https://github.com/JafarSoltann/codemark)
+
+## Tech stack
+
+- **React**: UI framework
+- **TypeScript**: Type-safe development
+- **esbuild**: Blazing-fast JavaScript bundler
+- **WebAssembly**: Enables esbuild to run in the browser
+
+## Key features
+
+### In-browser code execution
+
+Execute JavaScript and React code entirely in the browser:
+
+- No server-side code execution required
+- Instant feedback as you type
+- Full ES6+ syntax support
+- Import npm packages dynamically
+- React component rendering in isolated iframes
+
+<Accordion title="How does in-browser bundling work?">
+  CodeMark uses esbuild-WASM, which is the esbuild bundler compiled to WebAssembly. This allows the entire bundling process—parsing, transforming, and bundling JavaScript—to happen directly in your browser. Combined with dynamic module resolution, CodeMark can fetch and bundle npm packages on-the-fly.
+</Accordion>
+
+### esbuild-WASM integration
+
+Leverages esbuild's performance in the browser:
+
+- WebAssembly-based bundler for near-native performance
+- Instant transpilation and bundling
+- Tree-shaking and code optimization
+- Source map generation for debugging
+- Support for JSX and modern JavaScript syntax
+
+### NPM package imports
+
+Dynamic package resolution and loading:
+
+- Import any npm package using standard ES6 import syntax
+- Automatic package fetching from CDN
+- Version resolution and dependency management
+- Cached packages for improved performance
+- Support for both CommonJS and ES modules
+
+### Notebook-style interface
+
+Familiar notebook workflow for JavaScript developers:
+
+- Multiple code cells per notebook
+- Markdown cells for documentation
+- Cell execution order tracking
+- Cumulative scope across cells
+- Export and share notebooks
+
+### React component preview
+
+Live preview of React components:
+
+- Isolated iframe rendering for component safety
+- Hot reload on code changes
+- Props and state inspection
+- CSS styling support
+- Component error boundaries
+
+## Technical highlights
+
+<CardGroup cols={2}>
+  <Card title="esbuild-WASM" icon="cube">
+    Extremely fast JavaScript bundler running in WebAssembly provides near-native bundling performance in the browser
+  </Card>
+  
+  <Card title="Dynamic imports" icon="download">
+    Fetches and bundles npm packages on-demand from CDN, enabling full npm ecosystem access
+  </Card>
+  
+  <Card title="Iframe isolation" icon="window">
+    Executes user code in isolated iframes to prevent scope pollution and security issues
+  </Card>
+  
+  <Card title="TypeScript" icon="code">
+    Full TypeScript support throughout the codebase ensures type safety and better developer experience
+  </Card>
+</CardGroup>
+
+## Architecture decisions
+
+CodeMark's architecture addresses several unique challenges:
+
+1. **WASM-first bundling**: esbuild-WASM enables fast, client-side bundling without server round-trips
+2. **Module resolution**: Custom resolver fetches packages from unpkg CDN and caches them locally
+3. **Iframe sandboxing**: User code runs in isolated iframes to prevent interference with the host app
+4. **Cumulative execution**: Code cells share scope, mimicking Jupyter's cumulative execution model
+5. **Error boundaries**: React error boundaries catch and display runtime errors gracefully
+
+<Note>
+  Running esbuild in WebAssembly achieves impressive bundling speeds—often faster than server-side alternatives due to zero network latency.
+</Note>
+
+## Code execution flow
+
+When you execute a code cell:
+
+1. User enters JavaScript or React code in a cell
+2. Code is passed to esbuild-WASM for bundling
+3. esbuild transpiles JSX and modern JavaScript to browser-compatible code
+4. Dynamic imports are resolved by fetching from unpkg CDN
+5. Bundled code is injected into an isolated iframe
+6. Code executes in the iframe context
+7. Results (console output, renders, errors) are captured and displayed
+8. Subsequent cells have access to variables from previous cells
+
+## Use cases
+
+CodeMark is ideal for:
+
+- **Learning React**: Experiment with React components without setup
+- **Prototyping**: Quickly test ideas and share snippets
+- **Documentation**: Create interactive code examples
+- **Teaching**: Demonstrate JavaScript concepts with live examples
+- **Interview prep**: Practice coding problems in a familiar environment
+
+## Performance considerations
+
+- **WASM speed**: esbuild-WASM provides extremely fast bundling even for large code
+- **CDN caching**: npm packages are fetched once and cached by the browser
+- **Lazy loading**: esbuild-WASM binary is loaded only when first needed
+- **Incremental bundling**: Only changed cells trigger re-bundling
+- **Worker threads**: Future optimization to run bundling in Web Workers

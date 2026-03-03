@@ -1,0 +1,64 @@
+---
+title: Components overview
+description: Comprehensive guide to all components in the Next.js portfolio website
+---
+
+The portfolio website includes several custom React components built with TypeScript, Next.js, and TailwindCSS. These components provide the core UI and interactive elements throughout the site.
+
+## Component categories
+
+### Layout components
+
+**Navigation** - Main navigation bar with theme toggle functionality
+- Responsive navigation with route highlighting
+- Theme switcher (light/dark mode)
+- Built with Next.js Link for client-side routing
+
+**Footer** - Contact information and social links
+- Email, LinkedIn, GitHub, and resume links
+- Structured with semantic HTML (address, dl, dt, dd)
+- Uses ExternalLink component for external URLs
+
+### Interactive components
+
+**AsciiWave** - Animated ASCII art wave visualization
+- Canvas-based animation using sine waves
+- Theme-aware color scheme
+- Randomized parameters based on device fingerprint
+- Responsive sizing
+
+### UI components
+
+**Button** - Versatile button component with multiple variants
+- Built with Radix UI Slot and class-variance-authority
+- 6 variants: default, destructive, outline, secondary, ghost, link
+- 6 sizes: default, sm, lg, icon, icon-sm, icon-lg
+
+**Badge** - Small label component for tags and status indicators
+- 4 variants: default, secondary, destructive, outline
+- Rounded pill shape with customizable colors
+
+**ExternalLink** - Link component for external URLs
+- Automatically opens in new tab
+- Includes noopener/noreferrer security attributes
+- Screen reader support with aria-label
+- Styled with brand orange color
+
+## Usage patterns
+
+All components follow these best practices:
+
+- **TypeScript** - Fully typed props and interfaces
+- **Accessibility** - Semantic HTML and ARIA attributes
+- **Responsive** - Mobile-first design with TailwindCSS
+- **Theme support** - Light and dark mode compatibility
+- **Performance** - Client-side rendering only when needed ("use client" directive)
+
+## Next steps
+
+Explore the detailed documentation for each component:
+
+- [AsciiWave](/components/ascii-wave) - Animated ASCII wave component
+- [Navigation](/components/navigation) - Navigation bar component
+- [Footer](/components/footer) - Footer with contact links
+- [UI Components](/components/ui-components) - Button, Badge, and ExternalLink components

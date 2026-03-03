@@ -1,0 +1,178 @@
+---
+title: AsciiWave
+description: Animated ASCII art wave visualization component with theme support
+---
+
+The `AsciiWave` component renders an animated ASCII art wave using HTML canvas. It creates a dynamic, colorful wave pattern using mathematical sine and cosine functions, with colors and parameters that adapt to the current theme.
+
+## Features
+
+- Canvas-based animation with smooth 60fps rendering
+- Theme-aware color schemes (light and dark mode)
+- Randomized parameters based on device fingerprint for unique variations
+- Responsive sizing that adapts to container width
+- Accessible with proper ARIA labels
+
+## Usage
+
+<CodeGroup>
+```tsx Basic usage
+import { AsciiWave } from "@/components/ascii-wave";
+
+export default function Page() {
+  return (
+    <div>
+      <AsciiWave />
+    </div>
+  );
+}
+```
+
+```tsx With figure caption
+import { AsciiWave } from "@/components/ascii-wave";
+
+export default function Page() {
+  return (
+    <figure className="flex flex-col gap-2">
+      <AsciiWave />
+      <figcaption className="text-xs text-muted-foreground text-center font-mono">
+        (Here's a fun ASCII wave I made for you. You're welcome.)
+      </figcaption>
+    </figure>
+  );
+}
+```
+</CodeGroup>
+
+## Props
+
+The `AsciiWave` component accepts no props. All configuration is handled internally through the `ASCII_WAVE_CONFIG` constant.
+
+## Configuration
+
+The component uses configuration from `@/lib/constants.ts`:
+
+```typescript
+export const ASCII_WAVE_CONFIG = {
+  colors: ["#001524", "#15616d", "#ff7d00", "#78290f"],
+  chars: " .:-=+*#%@",
+  height: 400,
+  fontSize: 14,
+  fontFamily: 'Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+  threshold: 0.2,
+  speed: 0.01,
+  colorCycleRate: 10,
+  wave1: { x: 0.1 },
+  wave2: { y: 0.15, time: 0.5 },
+  wave3: { mix: 0.05, time: 0.2 },
+};
+```
+
+<ParamField path="colors" type="string[]">
+  Array of hex color codes used in light mode. Dark mode uses a separate grayscale palette.
+</ParamField>
+
+<ParamField path="chars" type="string">
+  Characters used to render the wave, from least to most dense. Default: `" .:-=+*#%@"`
+</ParamField>
+
+<ParamField path="height" type="number">
+  Canvas height in pixels. Default: `400`
+</ParamField>
+
+<ParamField path="fontSize" type="number">
+  Font size for ASCII characters in pixels. Default: `14`
+</ParamField>
+
+<ParamField path="fontFamily" type="string">
+  Monospace font family stack for rendering characters
+</ParamField>
+
+<ParamField path="threshold" type="number">
+  Wave intensity threshold (0-1). Higher values show fewer characters. Default: `0.2`
+</ParamField>
+
+<ParamField path="speed" type="number">
+  Animation speed multiplier. Default: `0.01`
+</ParamField>
+
+<ParamField path="colorCycleRate" type="number">
+  How quickly colors cycle through the palette. Default: `10`
+</ParamField>
+
+<ParamField path="wave1.x" type="number">
+  Horizontal frequency of the first wave. Default: `0.1`
+</ParamField>
+
+<ParamField path="wave2.y" type="number">
+  Vertical frequency of the second wave. Default: `0.15`
+</ParamField>
+
+<ParamField path="wave2.time" type="number">
+  Time multiplier for second wave. Default: `0.5`
+</ParamField>
+
+<ParamField path="wave3.mix" type="number">
+  Mixed frequency for the third wave. Default: `0.05`
+</ParamField>
+
+<ParamField path="wave3.time" type="number">
+  Time multiplier for third wave. Default: `0.2`
+</ParamField>
+
+## Theme behavior
+
+The component automatically adapts its color scheme based on the current theme:
+
+**Light mode** - Uses the colors from `ASCII_WAVE_CONFIG.colors`:
+- `#001524` (dark navy)
+- `#15616d` (teal)
+- `#ff7d00` (brand orange)
+- `#78290f` (dark brown)
+
+**Dark mode** - Uses brighter grayscale colors for better visibility:
+- `#888888` (medium gray)
+- `#aaaaaa` (light gray)
+- `#cccccc` (lighter gray)
+- `#ffffff` (white)
+
+<Note>
+  The component uses the `useTheme` hook from `@/context/theme-context` to detect theme changes and re-render with appropriate colors.
+</Note>
+
+## Randomization
+
+Each visitor sees a slightly different wave pattern. The component uses a device fingerprint to seed a pseudo-random number generator, which then randomizes:
+
+- Color order within the palette
+- Wave frequencies (±5% variation)
+- Wave timing parameters (±10% variation)
+- Animation speed (80-150% of base speed)
+
+This creates unique but consistent variations - the same device will always see the same wave pattern.
+
+## Implementation details
+
+The component is marked with `"use client"` because it:
+- Uses React hooks (`useRef`, `useEffect`)
+- Accesses browser APIs (`canvas`, `requestAnimationFrame`, `window`)
+- Requires theme context from `ThemeProvider`
+
+## Accessibility
+
+The canvas element includes proper accessibility attributes:
+
+```tsx
+<canvas 
+  ref={canvasRef} 
+  className="block" 
+  role="img" 
+  aria-label="Animated ASCII wave showing colorful character patterns"
+/>
+```
+
+## Source location
+
+You can find the component implementation at:
+
+`src/components/ascii-wave.tsx`

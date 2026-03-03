@@ -1,0 +1,496 @@
+---
+title: Adding projects
+description: Learn how to add new projects to your portfolio showcase with examples and code snippets
+---
+
+You can add projects to your portfolio by editing the `projects` array in `src/data/projects.ts`. Each project is type-safe and follows a consistent structure.
+
+## Project data structure
+
+The `ProjectItem` interface is defined in `src/types/index.ts:17-24`:
+
+```typescript index.ts
+export interface ProjectItem {
+  title: string;        // Project name
+  description: string;  // Brief project description
+  techStack: string[];  // Array of technologies used
+  link?: string;        // Optional live demo URL
+  github?: string;      // Optional GitHub repository URL
+  features?: string[];  // Optional list of key features
+}
+```
+
+<Note>
+Fields marked with `?` are optional. At minimum, you need `title`, `description`, and `techStack` to create a valid project entry.
+</Note>
+
+## Adding a new project
+
+Follow these steps to add a project to your showcase.
+
+<Steps>
+  <Step title="Open the projects file">
+    Navigate to `src/data/projects.ts` in your code editor.
+  </Step>
+  
+  <Step title="Add links to constants (if needed)">
+    If your project has a live demo or GitHub repository, first add the URLs to `src/lib/constants.ts` in the `ExternalLinks` object.
+  </Step>
+  
+  <Step title="Create the project object">
+    Add a new object to the `projects` array following the structure shown below.
+  </Step>
+  
+  <Step title="Save and preview">
+    Save the file and check your browser. The new project should appear automatically with hot reloading.
+  </Step>
+</Steps>
+
+### Basic example
+
+Here's a minimal project with required fields only:
+
+```typescript projects.ts
+{
+  title: "Task Manager Pro",
+  description: "A collaborative task management application with real-time updates, drag-and-drop functionality, and team workspaces.",
+  techStack: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "Tailwind CSS"],
+}
+```
+
+### Complete example with all fields
+
+```typescript projects.ts
+{
+  title: "E-Commerce Platform",
+  description: "Full-stack e-commerce solution with payment processing, inventory management, and admin dashboard. Supports multiple payment gateways and real-time order tracking.",
+  techStack: ["Next.js 15", "TypeScript", "Stripe", "Prisma", "PostgreSQL", "Redis"],
+  link: ExternalLinks.ECommercePlatform,
+  github: ExternalLinks.ECommercePlatformGithub,
+  features: [
+    "Multi-vendor marketplace",
+    "Real-time inventory sync",
+    "Payment gateway integration",
+    "Admin analytics dashboard",
+  ],
+}
+```
+
+<Tip>
+When adding links, use the `ExternalLinks` object from `src/lib/constants.ts` rather than hardcoding URLs. This keeps all links centralized and type-safe.
+</Tip>
+
+## Real project examples
+
+Here are actual projects from the portfolio to use as templates.
+
+### Example 1: Telegram bot project
+
+From `src/data/projects.ts:5-12`:
+
+```typescript projects.ts
+{
+  title: "Song Pal Bot",
+  description: "Telegram bot enabling two users to share music and track listening habits. Features unique pairing codes, automatic link detection (Spotify/YouTube), click tracking, and scheduled reminder notifications.",
+  techStack: ["FastAPI", "PostgreSQL", "aiogram", "Docker", "Alembic"],
+  github: ExternalLinks.SongPalBotGithub,
+  link: ExternalLinks.SongPalBot,
+}
+```
+
+<AccordionGroup>
+  <Accordion title="What makes this description effective?">
+    - Starts with the core value proposition ("enabling two users to share music")
+    - Lists specific features that differentiate it (pairing codes, auto-detection)
+    - Concise yet comprehensive at around 30 words
+  </Accordion>
+  
+  <Accordion title="Tech stack choices">
+    - Lists backend framework first (FastAPI)
+    - Includes database (PostgreSQL)
+    - Mentions domain-specific library (aiogram for Telegram bots)
+    - Shows DevOps knowledge (Docker, Alembic)
+  </Accordion>
+</AccordionGroup>
+
+### Example 2: Full-stack CRM
+
+From `src/data/projects.ts:13-19`:
+
+```typescript projects.ts
+{
+  title: "PixelPro CRM",
+  description: "Full-stack CRM with FastAPI backend and Next.js 15 frontend. Features citizen data integration (ASAN), Jitsi video meetings, and JWT auth.",
+  techStack: ["FastAPI", "Redis", "Docker", "PostgreSQL", "NextJS"],
+  github: ExternalLinks.PixelProCRM,
+}
+```
+
+### Example 3: Mobile application
+
+From `src/data/projects.ts:20-33`:
+
+```typescript projects.ts
+{
+  title: "Ferrum Capital Mobile",
+  description: "Mobile factoring app with 100,000+ active users. Designed and implemented full-stack SIMA citizen certificate authentication with X.509 certificate parsing and RSA-SHA256 signature verification. Developed multi-module architecture for obligations, factoring, and video-meetings with Firebase Cloud Messaging push notifications and offline capabilities.",
+  techStack: [
+    "React Native (Expo)",
+    "Expo Modules",
+    "TypeScript",
+    "TanStack React Query",
+    "React Hook Form",
+    "Zod",
+  ],
+  link: ExternalLinks.FerrumCapitalCustomerApp,
+}
+```
+
+<Warning>
+This project has no GitHub link because it's proprietary commercial software. You can omit the `github` field for private or enterprise projects.
+</Warning>
+
+### Example 4: Complex web application
+
+From `src/data/projects.ts:34-48`:
+
+```typescript projects.ts
+{
+  title: "4YOU",
+  description: "Mental health platform with 30+ partner psychologists and 400+ active customers. Built with Server Actions as type-safe RPC and end-to-end validation with Zod schemas. Custom design system with shadcn/ui components and TailwindCSS. Implemented JWT token rotation via Edge middleware with automatic refresh on 401 responses and HTTP-only cookie-based session storage.",
+  techStack: [
+    "Next.js 15",
+    "TypeScript",
+    "Server Actions",
+    "Zod",
+    "shadcn/ui",
+    "TailwindCSS",
+    "Docker",
+  ],
+  link: ExternalLinks["4You"],
+}
+```
+
+<Tip>
+For projects with special characters in the link name, use bracket notation: `ExternalLinks["4You"]` instead of dot notation.
+</Tip>
+
+### Example 5: Technical demo project
+
+From `src/data/projects.ts:49-56`:
+
+```typescript projects.ts
+{
+  title: "CodeMark",
+  description: "Jupyter-like notebook for JavaScript/React with live in-browser code execution using esbuild-WASM.",
+  techStack: ["React", "TypeScript", "esbuild", "WebAssembly"],
+  github: ExternalLinks.CodeMarkGithub,
+  link: ExternalLinks.CodeMarkDemo,
+}
+```
+
+## Writing effective descriptions
+
+Your project descriptions should be clear, concise, and compelling.
+
+### Description best practices
+
+<CardGroup cols={2}>
+  <Card title="Lead with impact">
+    Start with the most impressive metric or unique value proposition. "100,000+ active users" or "30+ partner psychologists" immediately establishes scale.
+  </Card>
+  
+  <Card title="Be specific about features">
+    Instead of "user authentication," say "JWT token rotation with automatic refresh" to showcase deeper technical knowledge.
+  </Card>
+  
+  <Card title="Include technical details">
+    Mention specific libraries, algorithms, or patterns you implemented (e.g., "X.509 certificate parsing," "Server Actions as RPC").
+  </Card>
+  
+  <Card title="Keep it scannable">
+    Aim for 2-4 sentences. Readers should grasp the project's scope within 5-10 seconds of reading.
+  </Card>
+</CardGroup>
+
+### Description length guidelines
+
+<CodeGroup>
+```text Too brief
+"A CRM application with authentication."
+// Missing: tech details, scale, unique features
+```
+
+```text Well-balanced
+"Full-stack CRM with FastAPI backend and Next.js 15 frontend. Features citizen data integration (ASAN), Jitsi video meetings, and JWT auth."
+// Good: specific technologies, key features, architecture
+```
+
+```text Too verbose
+"This is a comprehensive customer relationship management system that I built from scratch using modern technologies. It has a backend written in FastAPI which handles all the API requests, and a frontend built with Next.js 15 that provides a great user experience. The system integrates with ASAN for citizen data, includes video calling functionality powered by Jitsi, and implements secure authentication using JSON Web Tokens."
+// Too long: excessive detail, repetitive, hard to scan
+```
+</CodeGroup>
+
+## Selecting your tech stack
+
+List technologies strategically to highlight your skills.
+
+### Tech stack ordering
+
+Order technologies by importance and relevance:
+
+<Steps>
+  <Step title="Primary framework first">
+    Start with your main framework or language (e.g., "Next.js", "React Native", "FastAPI").
+  </Step>
+  
+  <Step title="Core technologies next">
+    Include essential tools like TypeScript, databases, or state management libraries.
+  </Step>
+  
+  <Step title="Notable integrations last">
+    End with interesting third-party services or specialized libraries that demonstrate breadth.
+  </Step>
+</Steps>
+
+### Example tech stack
+
+```typescript projects.ts
+techStack: [
+  "Next.js 15",           // Primary framework
+  "TypeScript",           // Language
+  "Server Actions",       // Architecture pattern
+  "Zod",                  // Validation library
+  "shadcn/ui",           // UI component library
+  "TailwindCSS",         // Styling
+  "Docker",              // DevOps
+]
+```
+
+<Note>
+Limit your tech stack to 4-8 items. Too few suggests a simple project, too many becomes overwhelming and dilutes your message.
+</Note>
+
+## Adding project links
+
+Links to live demos and GitHub repositories enhance credibility.
+
+### Adding links to constants
+
+Before referencing links in your project, add them to `src/lib/constants.ts:1-17`:
+
+```typescript constants.ts
+export const ExternalLinks = {
+  // ... existing links
+  
+  // Add your project links
+  MyProjectDemo: "https://myproject.vercel.app",
+  MyProjectGithub: "https://github.com/username/my-project",
+} as const;
+```
+
+### Using links in projects
+
+Reference the links in your project object:
+
+```typescript projects.ts
+import { ExternalLinks } from "@/lib/constants";
+
+{
+  title: "My Awesome Project",
+  description: "...",
+  techStack: ["Next.js", "TypeScript"],
+  link: ExternalLinks.MyProjectDemo,
+  github: ExternalLinks.MyProjectGithub,
+}
+```
+
+<Tip>
+If you only have a GitHub repository without a live demo, you can omit the `link` field. Similarly, omit `github` for proprietary projects.
+</Tip>
+
+## Project ordering
+
+Projects are displayed in the order they appear in the array.
+
+### Recommended ordering strategy
+
+<Steps>
+  <Step title="Most impressive first">
+    Place your best or most recent projects at the top. These get the most visibility.
+  </Step>
+  
+  <Step title="Group by type (optional)">
+    You can organize by category: commercial projects first, then personal projects, then demos.
+  </Step>
+  
+  <Step title="Balance variety">
+    Alternate between different tech stacks to showcase breadth (e.g., don't list all React projects together).
+  </Step>
+</Steps>
+
+### Example ordering
+
+```typescript projects.ts
+export const projects: ProjectItem[] = [
+  // Production app with real users (most impressive)
+  { title: "Ferrum Capital Mobile", /* ... */ },
+  
+  // Commercial web app
+  { title: "4YOU", /* ... */ },
+  
+  // Open source full-stack project
+  { title: "PixelPro CRM", /* ... */ },
+  
+  // Smaller bot project
+  { title: "Song Pal Bot", /* ... */ },
+  
+  // Technical demo
+  { title: "CodeMark", /* ... */ },
+];
+```
+
+## Using the features field
+
+The optional `features` array lets you highlight key capabilities.
+
+### When to use features
+
+Use the `features` field when:
+
+- Your project has 4+ distinct capabilities worth highlighting
+- The description would become too long if you listed all features inline
+- You want to make specific technical achievements scannable
+
+### Example with features
+
+```typescript projects.ts
+{
+  title: "Multi-Tenant SaaS Platform",
+  description: "Enterprise-grade SaaS application with tenant isolation, role-based access control, and usage analytics.",
+  techStack: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "Stripe"],
+  link: ExternalLinks.SaaSPlatform,
+  github: ExternalLinks.SaaSPlatformGithub,
+  features: [
+    "Row-level security for tenant isolation",
+    "Custom domain support with SSL",
+    "Usage-based billing with Stripe",
+    "Real-time collaboration with WebSockets",
+    "Automated backup and recovery",
+  ],
+}
+```
+
+<Warning>
+The current portfolio design may not display the `features` field in the UI. Check your components before relying on this field for important information.
+</Warning>
+
+## Type safety validation
+
+TypeScript ensures your project data is valid.
+
+### Common type errors
+
+<AccordionGroup>
+  <Accordion title="Missing required fields">
+    ```typescript
+    // ❌ Error: Property 'description' is missing
+    {
+      title: "My Project",
+      techStack: ["React"],
+    }
+    
+    // ✅ Correct: All required fields present
+    {
+      title: "My Project",
+      description: "A React application for...",
+      techStack: ["React"],
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Wrong field types">
+    ```typescript
+    // ❌ Error: techStack must be an array
+    {
+      title: "My Project",
+      description: "...",
+      techStack: "React, TypeScript",
+    }
+    
+    // ✅ Correct: techStack is an array of strings
+    {
+      title: "My Project",
+      description: "...",
+      techStack: ["React", "TypeScript"],
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Invalid link references">
+    ```typescript
+    // ❌ Error: Property 'NonExistentLink' does not exist
+    {
+      title: "My Project",
+      description: "...",
+      techStack: ["React"],
+      link: ExternalLinks.NonExistentLink,
+    }
+    
+    // ✅ Correct: Link exists in ExternalLinks
+    {
+      title: "My Project",
+      description: "...",
+      techStack: ["React"],
+      link: ExternalLinks.MyProjectDemo,
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+<Tip>
+Run `npm run type-check` or `npm run build` to validate all projects before deploying. TypeScript will catch any errors at compile time.
+</Tip>
+
+## Complete workflow example
+
+Here's a complete example of adding a new project from start to finish.
+
+<Steps>
+  <Step title="Add links to constants">
+    ```typescript constants.ts
+    export const ExternalLinks = {
+      // ... existing links
+      WeatherDashboard: "https://weather-dashboard-demo.vercel.app",
+      WeatherDashboardGithub: "https://github.com/username/weather-dashboard",
+    } as const;
+    ```
+  </Step>
+  
+  <Step title="Import ExternalLinks in projects.ts">
+    The import should already exist at the top of `src/data/projects.ts:1`:
+    ```typescript projects.ts
+    import { ExternalLinks } from "@/lib/constants";
+    ```
+  </Step>
+  
+  <Step title="Add project to array">
+    ```typescript projects.ts
+    export const projects: ProjectItem[] = [
+      {
+        title: "Weather Dashboard",
+        description: "Real-time weather visualization with 7-day forecasts, air quality monitoring, and severe weather alerts. Integrates with OpenWeather API and uses geolocation for automatic city detection.",
+        techStack: ["Next.js 15", "TypeScript", "Recharts", "Tailwind CSS", "OpenWeather API"],
+        link: ExternalLinks.WeatherDashboard,
+        github: ExternalLinks.WeatherDashboardGithub,
+      },
+      // ... other projects
+    ];
+    ```
+  </Step>
+  
+  <Step title="Verify in browser">
+    Save the files and check your portfolio. The new project should appear with proper links and styling.
+  </Step>
+</Steps>

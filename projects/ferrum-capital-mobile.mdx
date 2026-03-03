@@ -1,0 +1,101 @@
+---
+title: Ferrum Capital Mobile
+description: Mobile factoring application serving 100,000+ active users with advanced SIMA authentication and multi-module architecture
+---
+
+Ferrum Capital Mobile is a production-grade mobile factoring application built with React Native (Expo) that serves over 100,000 active users. The app features sophisticated authentication, offline capabilities, and a modular architecture designed for scalability.
+
+<Info>
+  This project demonstrates enterprise-level mobile development with advanced security features including X.509 certificate parsing and RSA-SHA256 signature verification.
+</Info>
+
+## Overview
+
+The application provides a comprehensive factoring solution for mobile users, enabling them to manage obligations, process factoring requests, and participate in video meetings directly from their mobile devices.
+
+**Live app**: [View on App Store](https://apps.apple.com/az/app/ferrum-capital-m%C3%BC%C5%9Ft%C9%99ri/id1661598013)
+
+## Tech stack
+
+- **React Native (Expo)**: Cross-platform mobile framework
+- **Expo Modules**: Native functionality integration
+- **TypeScript**: Type-safe development
+- **TanStack React Query**: Data fetching and caching
+- **React Hook Form**: Form state management
+- **Zod**: Schema validation
+
+## Key features
+
+### SIMA certificate authentication
+
+Implemented full-stack SIMA citizen certificate authentication system with:
+
+- X.509 certificate parsing for extracting citizen credentials
+- RSA-SHA256 signature verification for security
+- Seamless integration with national identity infrastructure
+- Secure token management and session handling
+
+<Accordion title="What is SIMA?">
+  SIMA (State Information Management Agency) provides digital certificates for Azerbaijani citizens, similar to digital ID systems in other countries. This integration allows users to authenticate using their government-issued digital certificates.
+</Accordion>
+
+### Multi-module architecture
+
+The app is built with a modular architecture featuring:
+
+- **Obligations module**: Track and manage financial obligations
+- **Factoring module**: Process and submit factoring requests
+- **Video meetings module**: Integrated video conferencing for customer support
+
+This separation of concerns ensures maintainability and allows for independent feature development.
+
+### Push notifications
+
+Integrated Firebase Cloud Messaging (FCM) to deliver:
+
+- Real-time transaction updates
+- Meeting reminders and notifications
+- Status change alerts
+- Custom notification handling per module
+
+### Offline capabilities
+
+Built robust offline functionality that enables:
+
+- Data persistence when network is unavailable
+- Automatic sync when connection is restored
+- Optimistic UI updates for better user experience
+- Local caching of frequently accessed data
+
+## Technical highlights
+
+<CardGroup cols={2}>
+  <Card title="Type safety" icon="shield-check">
+    Full TypeScript implementation with Zod schemas for runtime validation ensures data integrity across the entire application
+  </Card>
+  
+  <Card title="State management" icon="database">
+    TanStack React Query provides sophisticated caching, automatic refetching, and optimistic updates
+  </Card>
+  
+  <Card title="Form handling" icon="file-lines">
+    React Hook Form delivers performant forms with built-in validation and minimal re-renders
+  </Card>
+  
+  <Card title="Native modules" icon="cube">
+    Custom Expo Modules extend native functionality for certificate handling and cryptographic operations
+  </Card>
+</CardGroup>
+
+## Architecture decisions
+
+The project follows several key architectural principles:
+
+1. **Modular design**: Each feature (obligations, factoring, meetings) is isolated in its own module with clear boundaries
+2. **Type-first approach**: TypeScript and Zod provide end-to-end type safety from API to UI
+3. **Offline-first**: Data persistence and sync logic ensure the app works reliably in poor network conditions
+4. **Security-first**: Certificate-based authentication and encrypted storage protect sensitive financial data
+
+<Note>
+  The combination of React Native Expo and custom native modules provides the flexibility of JavaScript development with the performance of native code where needed.
+</Note>

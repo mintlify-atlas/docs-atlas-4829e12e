@@ -1,0 +1,336 @@
+---
+title: ASCII animation
+description: Document the ASCII wave animation with device fingerprinting and canvas rendering
+---
+
+The ASCII wave animation creates a unique, theme-aware animation using HTML5 Canvas and mathematical wave functions. Each visitor sees a slightly different animation based on device fingerprinting.
+
+## Overview
+
+The `AsciiWave` component renders an animated wave pattern using ASCII characters on an HTML canvas. Located at `src/components/ascii-wave.tsx`, it combines:
+
+- **Three-wave synthesis** - Combines sine and cosine waves for complex patterns
+- **Device fingerprinting** - Creates unique variations per device
+- **Theme awareness** - Adapts colors for light and dark modes
+- **Responsive rendering** - Scales with container size and device pixel ratio
+
+## Configuration
+
+Base configuration is defined in `src/lib/constants.ts:19`:
+
+```typescript
+export const ASCII_WAVE_CONFIG = {
+  colors: ["#001524", "#15616d", "#ff7d00", "#78290f"],
+  chars: " .:-=+*#%@",
+  height: 400,
+  fontSize: 14,
+  fontFamily:
+    'Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+  threshold: 0.2,
+  speed: 0.01,
+  colorCycleRate: 10,
+
+  wave1: { x: 0.1 },
+  wave2: { y: 0.15, time: 0.5 },
+  wave3: { mix: 0.05, time: 0.2 },
+} as const;
+```
+
+<Accordion title="Configuration parameters explained">
+  - **colors** - Color palette for the animation
+  - **chars** - ASCII characters ordered from light to dark
+  - **height** - Canvas height in pixels
+  - **fontSize** - Character size in pixels
+  - **threshold** - Minimum wave value to render a character (0-1)
+  - **speed** - Animation speed multiplier
+  - **colorCycleRate** - Speed of color transitions
+  - **wave1/2/3** - Wave function parameters for x, y, and diagonal waves
+</Accordion>
+
+## Device fingerprinting
+
+Each device gets a unique animation by seeding pseudo-random variations:
+
+```typescript
+import { getDeviceFingerprint } from "@/lib/utils";
+
+const fingerprint = getDeviceFingerprint();
+let seed = fingerprint - 12312;
+
+const random = () => {
+  const x = Math.sin(seed++) * 10000;
+  return x - Math.floor(x);
+};
+
+const range = (min: number, max: number) => min + random() * (max - min);
+```
+
+<Info>
+The fingerprint creates a deterministic random seed, ensuring the same device always sees the same animation pattern.
+</Info>
+
+### Randomized configuration
+
+```typescript
+const lightColors = [...BASE_CONFIG.colors].sort(() => random() - 0.5);
+const darkColors = ["#888888", "#aaaaaa", "#cccccc", "#ffffff"].sort(() => random() - 0.5);
+
+const config = {
+  ...BASE_CONFIG,
+  colors: lightColors,
+  wave1: { x: BASE_CONFIG.wave1.x + range(-0.05, 0.05) },
+  wave2: {
+    y: BASE_CONFIG.wave2.y + range(-0.05, 0.05),
+    time: BASE_CONFIG.wave2.time + range(-0.1, 0.1),
+  },
+  wave3: {
+    mix: BASE_CONFIG.wave3.mix + range(-0.02, 0.02),
+    time: BASE_CONFIG.wave3.time + range(-0.1, 0.1),
+  },
+  speed: BASE_CONFIG.speed * range(0.8, 1.5),
+};
+```
+
+## Component implementation
+
+<Tabs>
+  <Tab title="Component structure">
+    ```typescript
+    export function AsciiWave() {
+      const canvasRef = useRef<HTMLCanvasElement>(null);
+      const { resolvedTheme } = useTheme();
+
+      useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        let frameId: number;
+        let time = 0;
+        
+        const currentColors = resolvedTheme === "dark" ? darkColors : config.colors;
+
+        // resize and draw functions...
+
+        window.addEventListener("resize", resize);
+        resize();
+        draw();
+
+        return () => {
+          window.removeEventListener("resize", resize);
+          cancelAnimationFrame(frameId);
+        };
+      }, [resolvedTheme]);
+
+      return (
+        <canvas 
+          ref={canvasRef} 
+          className="block" 
+          role="img" 
+          aria-label="Animated ASCII wave showing colorful character patterns" 
+        />
+      );
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Resize handler">
+    ```typescript
+    const resize = () => {
+      const parent = canvas.parentElement;
+      if (parent) {
+        const dpr = window.devicePixelRatio || 1;
+        const rect = parent.getBoundingClientRect();
+
+        canvas.width = rect.width * dpr;
+        canvas.height = config.height * dpr;
+
+        canvas.style.width = `${rect.width}px`;
+        canvas.style.height = `${config.height}px`;
+
+        ctx.scale(dpr, dpr);
+      }
+    };
+    ```
+    
+    <Note>
+    The resize handler uses `devicePixelRatio` to render crisp graphics on high-DPI displays like Retina screens.
+    </Note>
+  </Tab>
+  
+  <Tab title="Draw function">
+    ```typescript
+    const draw = () => {
+      if (!ctx || !canvas) return;
+
+      const { chars, fontSize, fontFamily, threshold, speed, colorCycleRate,
+        wave1: w1, wave2: w2, wave3: w3 } = config;
+
+      const width = parseFloat(canvas.style.width);
+      const height = parseFloat(canvas.style.height);
+
+      ctx.clearRect(0, 0, width, height);
+
+      const charWidth = fontSize * 0.6;
+      ctx.font = `bold ${fontSize}px ${fontFamily}`;
+      ctx.textBaseline = "top";
+
+      const cols = Math.floor(width / charWidth);
+      const rows = Math.floor(height / fontSize);
+
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const xNorm = x / cols;
+          const yNorm = y / rows;
+          const wave1Val = Math.sin(x * w1.x + time);
+          const wave2Val = Math.cos(y * w2.y - time * w2.time);
+          const wave3Val = Math.sin((x + y) * w3.mix + time * w3.time);
+
+          const val = (wave1Val + wave2Val + wave3Val) / 3;
+          const norm = (val + 1) / 2;
+
+          // Border rendering logic...
+          
+          if (norm > threshold) {
+            const charIndex = Math.floor(norm * (chars.length - 1));
+            const colorIndex = Math.floor(
+              ((xNorm + yNorm + norm) * colorCycleRate) % currentColors.length
+            );
+
+            ctx.fillStyle = currentColors[colorIndex];
+            ctx.fillText(chars[charIndex], x * charWidth, y * fontSize);
+          }
+        }
+      }
+
+      time += speed;
+      frameId = requestAnimationFrame(draw);
+    };
+    ```
+  </Tab>
+</Tabs>
+
+## Wave mathematics
+
+The animation combines three wave functions:
+
+<CodeGroup>
+```typescript Wave 1 (Horizontal)
+const wave1Val = Math.sin(x * w1.x + time);
+```
+
+```typescript Wave 2 (Vertical)
+const wave2Val = Math.cos(y * w2.y - time * w2.time);
+```
+
+```typescript Wave 3 (Diagonal)
+const wave3Val = Math.sin((x + y) * w3.mix + time * w3.time);
+```
+
+```typescript Combined
+const val = (wave1Val + wave2Val + wave3Val) / 3;
+const norm = (val + 1) / 2; // Normalize to 0-1 range
+```
+</CodeGroup>
+
+<Warning>
+The normalized value (`norm`) is used to select both the character density and color, creating coherent patterns.
+</Warning>
+
+## Border rendering
+
+The animation includes decorative borders:
+
+```typescript
+const isBorder = x === 0 || x === cols - 1 || y === 0 || y === rows - 1;
+
+if (isBorder) {
+  let char = "";
+  if ((x === 0 || x === cols - 1) && (y === 0 || y === rows - 1)) {
+    char = "+";
+  } else if (y === 0 || y === rows - 1) {
+    char = "-";
+  } else {
+    char = "|";
+  }
+
+  const colorIndex = Math.floor(
+    ((xNorm + yNorm + norm) * colorCycleRate) % currentColors.length
+  );
+
+  ctx.fillStyle = currentColors[colorIndex];
+  ctx.fillText(char, x * charWidth, y * fontSize);
+  continue;
+}
+```
+
+## Theme integration
+
+Colors automatically switch based on theme:
+
+```typescript
+const { resolvedTheme } = useTheme();
+const currentColors = resolvedTheme === "dark" ? darkColors : config.colors;
+```
+
+<Tabs>
+  <Tab title="Light mode">
+    ```typescript
+    const lightColors = ["#001524", "#15616d", "#ff7d00", "#78290f"];
+    ```
+    Rich, saturated colors for light backgrounds.
+  </Tab>
+  
+  <Tab title="Dark mode">
+    ```typescript
+    const darkColors = ["#888888", "#aaaaaa", "#cccccc", "#ffffff"];
+    ```
+    Brighter grayscale colors for visibility on dark backgrounds.
+  </Tab>
+</Tabs>
+
+## Performance optimizations
+
+1. **requestAnimationFrame** - Uses browser's optimal rendering timing
+2. **Cleanup** - Cancels animation frame on unmount
+3. **Event listener cleanup** - Removes resize listener on unmount
+4. **Effect dependency** - Re-initializes only when theme changes
+
+```typescript
+return () => {
+  window.removeEventListener("resize", resize);
+  cancelAnimationFrame(frameId);
+};
+```
+
+## Accessibility
+
+The canvas includes proper ARIA attributes:
+
+```tsx
+<canvas 
+  ref={canvasRef} 
+  className="block" 
+  role="img" 
+  aria-label="Animated ASCII wave showing colorful character patterns" 
+/>
+```
+
+## Usage in page
+
+From `src/app/page.tsx:116`:
+
+```tsx
+<figure className="flex flex-col gap-2">
+  <AsciiWave />
+  <figcaption className="text-xs text-muted-foreground text-center font-mono">
+    (Here's a fun ASCII wave I made for you. You're welcome.)
+  </figcaption>
+</figure>
+```
+
+<Note>
+Wrapping in a `<figure>` with `<figcaption>` provides semantic structure and context for the animation.
+</Note>

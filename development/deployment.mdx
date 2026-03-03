@@ -1,0 +1,395 @@
+---
+title: Deployment
+description: Deploy your Next.js portfolio to Vercel, Netlify, or other platforms
+---
+
+This guide covers deploying your portfolio website to various hosting platforms, with a focus on Vercel as the recommended platform for Next.js applications.
+
+## Deploy to Vercel (recommended)
+
+Vercel is the recommended platform for deploying Next.js applications, offering zero-configuration deployments and optimal performance.
+
+<Steps>
+  <Step title="Install Vercel CLI">
+    Install the Vercel CLI globally:
+
+    <CodeGroup>
+      ```bash pnpm
+      pnpm add -g vercel
+      ```
+
+      ```bash npm
+      npm install -g vercel
+      ```
+
+      ```bash yarn
+      yarn global add vercel
+      ```
+    </CodeGroup>
+  </Step>
+
+  <Step title="Login to Vercel">
+    Authenticate with your Vercel account:
+
+    ```bash
+    vercel login
+    ```
+
+    Follow the prompts to complete authentication.
+  </Step>
+
+  <Step title="Deploy your project">
+    From your project root, run:
+
+    ```bash
+    vercel
+    ```
+
+    The CLI will:
+    - Detect your Next.js project
+    - Ask for project configuration (accept defaults)
+    - Build and deploy your application
+    - Provide a preview URL
+  </Step>
+
+  <Step title="Deploy to production">
+    Once you're ready for production:
+
+    ```bash
+    vercel --prod
+    ```
+
+    Your site will be deployed to your production domain.
+  </Step>
+</Steps>
+
+### Deploy via GitHub integration
+
+For automatic deployments on every push:
+
+<Steps>
+  <Step title="Push to GitHub">
+    Ensure your code is pushed to a GitHub repository:
+
+    ```bash
+    git remote add origin <your-repo-url>
+    git push -u origin main
+    ```
+  </Step>
+
+  <Step title="Connect to Vercel">
+    1. Go to [vercel.com](https://vercel.com)
+    2. Click "Add New Project"
+    3. Import your GitHub repository
+    4. Vercel will auto-detect Next.js settings
+  </Step>
+
+  <Step title="Configure and deploy">
+    Review the configuration:
+
+    - **Framework Preset**: Next.js
+    - **Build Command**: `pnpm build` or `npm run build`
+    - **Output Directory**: `.next` (auto-detected)
+    - **Install Command**: `pnpm install` or `npm install`
+
+    Click "Deploy" to start the deployment.
+  </Step>
+</Steps>
+
+<Info>
+Vercel will automatically deploy preview branches for pull requests and production deployments when you push to your main branch.
+</Info>
+
+### Environment variables on Vercel
+
+If your application uses environment variables:
+
+1. Go to your project settings on Vercel
+2. Navigate to **Environment Variables**
+3. Add your variables:
+   - `NEXT_PUBLIC_VERCEL_ANALYTICS_ID` (if using Vercel Analytics)
+   - Any other environment variables
+4. Select environments: Production, Preview, or Development
+
+<Warning>
+Never expose sensitive secrets in `NEXT_PUBLIC_*` variables as they are accessible in the browser.
+</Warning>
+
+## Deploy to Netlify
+
+Netlify is another excellent option for Next.js deployments.
+
+<Steps>
+  <Step title="Install Netlify CLI">
+    <CodeGroup>
+      ```bash pnpm
+      pnpm add -g netlify-cli
+      ```
+
+      ```bash npm
+      npm install -g netlify-cli
+      ```
+    </CodeGroup>
+  </Step>
+
+  <Step title="Create netlify.toml">
+    Create a configuration file in your project root:
+
+    ```toml netlify.toml
+    [build]
+      command = "pnpm build"
+      publish = ".next"
+
+    [[plugins]]
+      package = "@netlify/plugin-nextjs"
+    ```
+  </Step>
+
+  <Step title="Deploy">
+    Login and deploy:
+
+    ```bash
+    netlify login
+    netlify deploy --prod
+    ```
+  </Step>
+</Steps>
+
+<Note>
+Netlify uses the `@netlify/plugin-nextjs` plugin to properly handle Next.js features like ISR and API routes.
+</Note>
+
+## Deploy to other platforms
+
+### Docker deployment
+
+Create a `Dockerfile` for containerized deployments:
+
+```dockerfile Dockerfile
+FROM node:20-alpine AS base
+
+# Install dependencies
+FROM base AS deps
+RUN corepack enable pnpm
+WORKDIR /app
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+
+# Build application
+FROM base AS builder
+RUN corepack enable pnpm
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN pnpm build
+
+# Production image
+FROM base AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
+EXPOSE 3000
+ENV PORT=3000
+
+CMD ["node", "server.js"]
+```
+
+<Warning>
+For Docker deployment, add `output: "standalone"` to your `next.config.ts`.
+</Warning>
+
+### Build and run:
+
+```bash
+docker build -t portfolio .
+docker run -p 3000:3000 portfolio
+```
+
+### Self-hosted deployment
+
+For traditional server deployment:
+
+<Steps>
+  <Step title="Build the application">
+    ```bash
+    pnpm build
+    ```
+  </Step>
+
+  <Step title="Start the production server">
+    ```bash
+    pnpm start
+    ```
+
+    The server will run on port 3000 by default.
+  </Step>
+
+  <Step title="Use a process manager">
+    Use PM2 or systemd to keep your application running:
+
+    ```bash
+    pnpm add -g pm2
+    pm2 start npm --name "portfolio" -- start
+    pm2 save
+    pm2 startup
+    ```
+  </Step>
+
+  <Step title="Configure reverse proxy">
+    Set up nginx or Apache as a reverse proxy:
+
+    ```nginx nginx.conf
+    server {
+      listen 80;
+      server_name yourdomain.com;
+
+      location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+      }
+    }
+    ```
+  </Step>
+</Steps>
+
+## Pre-deployment checklist
+
+Before deploying to production, ensure:
+
+- [ ] All environment variables are configured
+- [ ] Build completes successfully with `pnpm build`
+- [ ] Security headers are properly configured (already set in `next.config.ts`)
+- [ ] Analytics tracking is set up (Vercel Analytics is included)
+- [ ] Custom domain is configured (if applicable)
+- [ ] SSL/TLS certificate is provisioned
+- [ ] Git hooks run successfully (resume PDF generation)
+- [ ] No console errors in production build
+
+## Performance optimization
+
+The portfolio is already optimized with:
+
+### Built-in optimizations
+- **Security headers** - XSS protection, HSTS, frame options (next.config.ts:5-41)
+- **Font optimization** - Variable fonts with font-display swap
+- **Image optimization** - Next.js automatic image optimization
+- **Code splitting** - Automatic route-based code splitting
+- **Compression** - Gzip/Brotli compression on Vercel
+
+### Additional recommendations
+
+<Info>
+Vercel automatically enables these optimizations:
+- Brotli compression
+- HTTP/2 and HTTP/3
+- Global CDN caching
+- Automatic HTTPS
+</Info>
+
+## Monitoring and analytics
+
+The project includes Vercel Analytics for monitoring:
+
+```typescript
+import { Analytics } from '@vercel/analytics/react'
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        {children}
+        <Analytics />
+      </body>
+    </html>
+  )
+}
+```
+
+### What's tracked
+- Page views
+- Web Vitals (LCP, FID, CLS)
+- User sessions
+- Geographic distribution
+
+## Troubleshooting deployments
+
+### Build fails on Vercel
+
+Check the build logs for errors. Common issues:
+
+**Type errors:**
+```bash
+pnpm lint
+pnpm build
+```
+
+Fix type errors locally before pushing.
+
+**Missing dependencies:**
+
+Ensure all dependencies are in `package.json`, not just `devDependencies` if needed at runtime.
+
+**Puppeteer issues:**
+
+If the precommit hook fails during build, you may need to skip it or install Chromium dependencies. Add to `package.json`:
+
+```json
+{
+  "scripts": {
+    "build": "next build"
+  }
+}
+```
+
+### Server timeouts
+
+If you experience timeouts with the resume PDF generation during deployment:
+
+1. Consider generating PDFs client-side or on-demand
+2. Move PDF generation out of the build process
+3. Use a serverless function instead of a build hook
+
+## Custom domains
+
+### On Vercel
+
+1. Go to your project settings
+2. Navigate to **Domains**
+3. Add your custom domain
+4. Update your DNS records as instructed:
+   - **A Record**: Point to `76.76.21.21`
+   - **CNAME**: Point to `cname.vercel-dns.com`
+
+<Note>
+Vercel automatically provisions SSL certificates for custom domains.
+</Note>
+
+## Continuous deployment workflow
+
+With GitHub integration enabled:
+
+1. **Push to feature branch** → Preview deployment created
+2. **Open pull request** → Deployment comment added to PR
+3. **Merge to main** → Production deployment triggered
+4. **Rollback if needed** → One-click rollback in Vercel dashboard
+
+## Next steps
+
+Your portfolio is now deployed! Consider:
+
+- Setting up custom domains
+- Configuring analytics and monitoring
+- Adding SEO optimization
+- Setting up automated testing in CI/CD

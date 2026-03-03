@@ -1,0 +1,124 @@
+---
+title: PixelPro CRM
+description: Full-stack CRM system with citizen data integration, video meetings, and comprehensive authentication built with FastAPI and Next.js 15
+---
+
+PixelPro CRM is a full-stack customer relationship management system that integrates citizen data from ASAN (Azerbaijan Service and Assessment Network), provides Jitsi video meeting capabilities, and implements secure JWT authentication.
+
+<Info>
+  This project demonstrates full-stack development expertise with a FastAPI backend and Next.js 15 frontend, featuring government API integration and real-time video conferencing.
+</Info>
+
+## Overview
+
+The CRM system streamlines customer onboarding and management by integrating directly with government databases, enabling video meetings for remote verification, and providing a comprehensive admin panel for employee management.
+
+**Source code**: [View on GitHub](https://github.com/JafarSoltann/PixelPro-CRM)
+
+## Tech stack
+
+- **FastAPI**: High-performance Python backend framework
+- **Next.js 15**: React framework with App Router
+- **PostgreSQL**: Relational database
+- **Redis**: Caching and session storage
+- **Docker**: Containerization and orchestration
+
+## Key features
+
+### ASAN citizen data integration
+
+Seamless integration with Azerbaijan's national citizen database:
+
+- Real-time citizen data retrieval using official ASAN APIs
+- Automatic population of customer profiles with verified government data
+- Address, identification, and contact information validation
+- Secure credential management for API access
+- Rate limiting and caching to optimize API usage
+
+<Accordion title="What is ASAN?">
+  ASAN (Azerbaijan Service and Assessment Network) is the government agency responsible for public services in Azerbaijan. Integration with ASAN allows the CRM to fetch verified citizen data, reducing manual data entry and ensuring data accuracy.
+</Accordion>
+
+### Jitsi video meetings
+
+Integrated video conferencing for remote customer interactions:
+
+- Embedded Jitsi Meet instances for secure video calls
+- Meeting scheduling and calendar integration
+- Recording and playback capabilities
+- Screen sharing for document review
+- Multi-participant support for team meetings
+
+### JWT authentication
+
+Comprehensive authentication and authorization system:
+
+- JSON Web Token (JWT) based authentication
+- Role-based access control (RBAC) for different user types
+- Refresh token rotation for enhanced security
+- Redis-based session management
+- Logout and token invalidation support
+
+### Employee management
+
+Admin panel features for internal team management:
+
+- User creation and role assignment
+- Permission management by department
+- Activity logging and audit trails
+- Performance metrics and reporting
+- Department hierarchy and organization structure
+
+## Technical highlights
+
+<CardGroup cols={2}>
+  <Card title="FastAPI" icon="bolt">
+    High-performance async Python framework with automatic OpenAPI documentation and type hints
+  </Card>
+  
+  <Card title="PostgreSQL" icon="database">
+    Robust relational database with complex queries, transactions, and data integrity constraints
+  </Card>
+  
+  <Card title="Redis" icon="gauge">
+    In-memory caching for session storage, API response caching, and rate limiting
+  </Card>
+  
+  <Card title="Docker" icon="docker">
+    Multi-container orchestration with docker-compose for development and production deployments
+  </Card>
+</CardGroup>
+
+## Architecture decisions
+
+The CRM follows modern full-stack development practices:
+
+1. **API-first design**: FastAPI backend exposes RESTful APIs consumed by the Next.js frontend
+2. **Async/await**: Leverages Python's asyncio for high-performance concurrent request handling
+3. **Type safety**: Python type hints and TypeScript provide end-to-end type checking
+4. **Microservices ready**: Docker containerization enables easy scaling and deployment
+5. **Caching layer**: Redis reduces database load and improves response times for frequently accessed data
+
+<Note>
+  The combination of FastAPI's automatic OpenAPI documentation and Next.js's TypeScript support creates a robust, self-documenting API layer.
+</Note>
+
+## Integration workflow
+
+Typical customer onboarding flow:
+
+1. Employee enters citizen ID number in the CRM
+2. System queries ASAN API for verified citizen data
+3. Customer profile is auto-populated with government records
+4. Video meeting is scheduled for identity verification
+5. Employee conducts Jitsi video call with customer
+6. Customer data is finalized and stored in PostgreSQL
+7. Activity is logged for audit and compliance purposes
+
+## Performance optimizations
+
+- **Redis caching**: Frequently accessed ASAN data is cached to reduce API calls
+- **Database indexing**: PostgreSQL indexes on common query patterns
+- **Connection pooling**: Efficient database connection management
+- **Async I/O**: FastAPI's async capabilities handle concurrent requests efficiently
+- **Docker optimization**: Multi-stage builds reduce image size and startup time

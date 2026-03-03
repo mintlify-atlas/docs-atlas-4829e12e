@@ -1,0 +1,220 @@
+---
+title: Footer
+description: Contact information footer with external links and semantic HTML
+---
+
+The `Footer` component displays contact information including email, social media links, and resume download. It uses semantic HTML elements for proper structure and accessibility.
+
+## Features
+
+- Semantic HTML with `footer`, `address`, and definition list (`dl`, `dt`, `dd`)
+- External links with proper security attributes
+- Responsive text sizing
+- Monospace font for contact information
+- Brand orange color for links
+
+## Usage
+
+<CodeGroup>
+```tsx Layout integration
+import { Footer } from "@/components/footer";
+
+export default function RootLayout({ children }) {
+  return (
+    <div className="max-w-2xl min-h-screen mx-auto px-4 py-10 md:py-20 flex flex-col gap-12">
+      <main id="main-content" className="flex-1">
+        {children}
+      </main>
+      <Footer />
+    </div>
+  );
+}
+```
+
+```tsx Standalone usage
+import { Footer } from "@/components/footer";
+
+export default function Page() {
+  return (
+    <div>
+      <section>
+        {/* Page content */}
+      </section>
+      <Footer />
+    </div>
+  );
+}
+```
+</CodeGroup>
+
+## Props
+
+The `Footer` component accepts no props. Contact links are defined internally.
+
+## Contact links
+
+The footer displays these contact methods:
+
+```typescript
+const CONTACT_LINKS = {
+  email: {
+    href: "mailto:ahmadjafarov02@gmail.com",
+    label: "ahmadjafarov02@gmail.com",
+  },
+  linkedin: {
+    href: "https://www.linkedin.com/in/ahmad-jafarov-221734190/",
+    label: "linkedin.com/in/ahmad-jafarov-221734190",
+  },
+  github: { 
+    href: "https://github.com/ahm3tj4f", 
+    label: "github.com/ahm3tj4f" 
+  },
+};
+```
+
+<Note>
+  Resume link points to `/resume.pdf` which should be placed in the `public` directory.
+</Note>
+
+## Structure
+
+The footer uses semantic HTML for better accessibility:
+
+<ParamField path="footer" type="element">
+  Main container with `mt-auto` and `pt-8` spacing
+</ParamField>
+
+<ParamField path="address" type="element">
+  Wraps contact information with `not-italic` to override default styling
+</ParamField>
+
+<ParamField path="dl, dt, dd" type="elements">
+  Definition list structure where:
+  - `dt` - Contact type label (Email, LinkedIn, etc.)
+  - `dd` - Contact information with link
+</ParamField>
+
+## Implementation details
+
+```tsx
+<footer className="mt-auto pt-8">
+  <div className="border-t border-border/40" />
+  <div className="mt-8 space-y-6">
+    <p className="text-sm text-muted-foreground">
+      Let's work together!
+    </p>
+    <address className="not-italic">
+      <dl className="space-y-3">
+        <div className="flex items-center gap-3">
+          <dt className="w-20 shrink-0 text-sm">Email</dt>
+          <dd className="text-xs md:text-sm text-muted-foreground font-mono m-0">
+            <ExternalLink 
+              href={CONTACT_LINKS.email.href} 
+              ariaLabel="Send email"
+            >
+              {CONTACT_LINKS.email.label}
+            </ExternalLink>
+          </dd>
+        </div>
+        {/* More contact items */}
+      </dl>
+    </address>
+  </div>
+</footer>
+```
+
+## ExternalLink integration
+
+Each contact link uses the `ExternalLink` component:
+
+<ParamField path="href" type="string" required>
+  URL for the contact method (mailto:, https://, or relative path)
+</ParamField>
+
+<ParamField path="ariaLabel" type="string" required>
+  Descriptive label for screen readers
+  
+  Examples:
+  - "Send email"
+  - "View LinkedIn profile"
+  - "View GitHub profile"
+  - "View resume PDF"
+</ParamField>
+
+<ParamField path="children" type="ReactNode" required>
+  Display text for the link (usually the contact information)
+</ParamField>
+
+## Styling classes
+
+<Tabs>
+  <Tab title="Layout">
+    ```css
+    .mt-auto      /* Push footer to bottom */
+    .pt-8         /* Top padding */
+    .space-y-3    /* Vertical spacing between items */
+    .space-y-6    /* Vertical spacing between sections */
+    ```
+  </Tab>
+  
+  <Tab title="Typography">
+    ```css
+    .text-sm               /* Small text for labels */
+    .text-xs md:text-sm    /* Responsive link text */
+    .font-mono             /* Monospace for contact info */
+    .text-muted-foreground /* Muted color */
+    ```
+  </Tab>
+  
+  <Tab title="Flexbox">
+    ```css
+    .flex items-center gap-3 /* Contact item layout */
+    .w-20 shrink-0           /* Fixed width for labels */
+    ```
+  </Tab>
+</Tabs>
+
+## Accessibility
+
+The footer implements accessibility best practices:
+
+1. **Semantic elements** - Uses `footer`, `address`, `dl`, `dt`, `dd`
+2. **Not italic address** - Removes default italic styling for better readability
+3. **Descriptive labels** - Each link has a clear `ariaLabel`
+4. **Screen reader support** - ExternalLink adds "(opens in new tab)" for external links
+5. **Margin reset** - `m-0` on `dd` elements prevents unexpected spacing
+
+## Example output
+
+```
+──────────────────────────────────────
+
+Let's work together!
+
+Email      ahmadjafarov02@gmail.com
+LinkedIn   linkedin.com/in/ahmad-jafarov-221734190
+GitHub     github.com/ahm3tj4f
+Resume     View Resume
+```
+
+## Customization
+
+To modify contact links:
+
+1. Update the `CONTACT_LINKS` constant in `src/components/footer.tsx:3-13`
+2. Add or remove items in the `<dl>` structure
+3. Ensure each item follows the same pattern:
+   ```tsx
+   <div className="flex items-center gap-3">
+     <dt className="w-20 shrink-0 text-sm">Label</dt>
+     <dd className="text-xs md:text-sm text-muted-foreground font-mono m-0">
+       <ExternalLink href="..." ariaLabel="...">
+         Display Text
+       </ExternalLink>
+     </dd>
+   </div>
+   ```
+
+## Source location
+
+`src/components/footer.tsx:1-61`

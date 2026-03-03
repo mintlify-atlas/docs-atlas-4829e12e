@@ -1,0 +1,138 @@
+---
+title: Song Pal Bot
+description: Telegram bot enabling music sharing between paired users with automatic link detection, click tracking, and scheduled reminders
+---
+
+Song Pal Bot is a Telegram bot that enables two users to share music and track their listening habits. The bot features unique pairing codes, automatic link detection for Spotify and YouTube, click tracking, and scheduled reminder notifications.
+
+<Info>
+  This project demonstrates backend development with FastAPI, PostgreSQL, and Telegram bot integration using aiogram framework.
+</Info>
+
+## Overview
+
+The bot creates a private music-sharing experience between pairs of users, automatically detecting music links, tracking engagement, and sending gentle reminders to check shared songs.
+
+**Live bot**: [Try on Telegram](https://t.me/songpalbot)
+
+**Source code**: [View on GitHub](https://github.com/JafarSoltann/SongPalBot)
+
+## Tech stack
+
+- **FastAPI**: High-performance Python backend
+- **PostgreSQL**: Relational database for user and link storage
+- **aiogram**: Telegram bot framework
+- **Docker**: Containerization
+- **Alembic**: Database migrations
+
+## Key features
+
+### User pairing system
+
+Unique pairing mechanism for connecting music buddies:
+
+- Generate unique pairing codes for users
+- Code-based pairing process
+- One-to-one relationship enforcement
+- Easy unpair and re-pair functionality
+- Privacy-focused: only paired users can see each other's shares
+
+<Accordion title="How does pairing work?">
+  When you want to pair with a friend, one user generates a unique code using the bot. The other user enters this code to establish the connection. Once paired, any music links shared by either user will be automatically detected and tracked by the bot.
+</Accordion>
+
+### Automatic link detection
+
+Intelligent detection of music streaming links:
+
+- **Spotify**: Detects tracks, albums, playlists, and artists
+- **YouTube**: Identifies music videos and links
+- Regex-based URL parsing for reliable detection
+- Support for shortened URLs and various link formats
+- Extracts metadata when available
+
+### Click tracking
+
+Comprehensive engagement tracking system:
+
+- Records when links are clicked by the paired user
+- Timestamp tracking for listening patterns
+- Analytics on which songs get more engagement
+- Tracks click-through rates per user
+- Historical data for shared music over time
+
+### Scheduled notifications
+
+Automated reminder system to keep users engaged:
+
+- Periodic reminders to check unlistened songs
+- Customizable notification schedules
+- Smart notifications based on sharing frequency
+- Opt-in/opt-out preferences
+- Timezone-aware scheduling
+
+## Technical highlights
+
+<CardGroup cols={2}>
+  <Card title="aiogram" icon="telegram">
+    Modern async Telegram bot framework with decorator-based handlers and middleware support
+  </Card>
+  
+  <Card title="PostgreSQL" icon="database">
+    Stores user pairs, shared links, click events, and notification schedules with referential integrity
+  </Card>
+  
+  <Card title="Alembic" icon="code-branch">
+    Database migration tool ensures schema changes are versioned and reproducible across environments
+  </Card>
+  
+  <Card title="Docker" icon="docker">
+    Containerized deployment with docker-compose for bot, database, and scheduled jobs
+  </Card>
+</CardGroup>
+
+## Architecture decisions
+
+The bot follows these key design principles:
+
+1. **Event-driven architecture**: aiogram handlers respond to Telegram events asynchronously
+2. **Database-first design**: All state is persisted to PostgreSQL, enabling bot restarts without data loss
+3. **Scheduled tasks**: Background jobs handle notification delivery independent of user interactions
+4. **Privacy by design**: User pairs are isolated, preventing cross-pair data exposure
+5. **Idempotent operations**: Handlers can safely process the same event multiple times
+
+<Note>
+  The combination of FastAPI for webhooks and aiogram for bot logic creates a scalable architecture that can handle high message volumes.
+</Note>
+
+## Database schema
+
+Core database tables:
+
+- **users**: Telegram user information and preferences
+- **pairs**: Mapping of paired users with pairing timestamps
+- **shared_links**: Music links shared between pairs with metadata
+- **clicks**: Click events with timestamps for engagement tracking
+- **notifications**: Scheduled notification jobs and delivery status
+
+## Bot commands
+
+Key commands available to users:
+
+- `/start`: Initialize bot and get welcome message
+- `/pair`: Generate or enter pairing code
+- `/unpair`: Disconnect from current music pal
+- `/stats`: View sharing and listening statistics
+- `/settings`: Configure notification preferences
+- `/help`: Display command reference
+
+## Notification logic
+
+The scheduled reminder system works as follows:
+
+1. Background job runs periodically (e.g., daily at specified time)
+2. Queries database for users with unclicked shared links
+3. Checks user notification preferences and last notification time
+4. Sends friendly reminder message via Telegram
+5. Logs notification delivery in database
+6. Respects user timezone for optimal delivery time

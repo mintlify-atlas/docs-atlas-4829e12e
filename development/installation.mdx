@@ -1,0 +1,166 @@
+---
+title: Installation
+description: Install and set up the Next.js portfolio website on your local machine
+---
+
+This guide walks you through installing the portfolio website and getting it running on your local development environment.
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed on your system:
+
+- **Node.js** 20.x or higher
+- **Package manager**: npm, yarn, or pnpm
+- **Git** for version control
+
+<Info>
+This project uses **pnpm** as the primary package manager, but you can use npm or yarn if you prefer.
+</Info>
+
+## Installation steps
+
+<Steps>
+  <Step title="Clone the repository">
+    Clone the source code to your local machine:
+
+    ```bash
+    git clone <repository-url>
+    cd ahm3tj4f-portfolio
+    ```
+  </Step>
+
+  <Step title="Install dependencies">
+    Install all required packages using your preferred package manager:
+
+    <CodeGroup>
+      ```bash pnpm
+      pnpm install
+      ```
+
+      ```bash npm
+      npm install
+      ```
+
+      ```bash yarn
+      yarn install
+      ```
+    </CodeGroup>
+
+    <Note>
+    The project includes type overrides for React 19.2.7 in the pnpm configuration to ensure compatibility.
+    </Note>
+  </Step>
+
+  <Step title="Start the development server">
+    Run the development server:
+
+    <CodeGroup>
+      ```bash pnpm
+      pnpm dev
+      ```
+
+      ```bash npm
+      npm run dev
+      ```
+
+      ```bash yarn
+      yarn dev
+      ```
+    </CodeGroup>
+
+    The application will start at `http://localhost:3000`.
+  </Step>
+
+  <Step title="Verify the installation">
+    Open your browser and navigate to `http://localhost:3000`. You should see the portfolio website homepage.
+  </Step>
+</Steps>
+
+## Key dependencies
+
+The project uses the following major dependencies:
+
+### Framework and runtime
+- **Next.js 16.1.0** - React framework with App Router
+- **React 19.2.3** - UI library
+- **TypeScript 5.x** - Type-safe development
+
+### UI and styling
+- **Tailwind CSS 4** - Utility-first CSS framework
+- **Radix UI** - Accessible component primitives
+- **Lucide React** - Icon library
+- **class-variance-authority** - Component variants
+- **clsx** & **tailwind-merge** - Conditional classes
+
+### Content and MDX
+- **next-mdx-remote** - MDX content rendering
+- **gray-matter** - Front matter parsing
+- **remark-gfm** - GitHub Flavored Markdown
+- **rehype-slug** - Heading IDs for linking
+
+### 3D graphics
+- **Three.js** - 3D graphics library
+- **@react-three/fiber** - React renderer for Three.js
+- **@react-three/drei** - Helpers for react-three-fiber
+
+### Analytics and monitoring
+- **@vercel/analytics** - Web analytics
+
+## Development tools
+
+The project includes several development tools:
+
+- **ESLint** - Code linting with Next.js config
+- **Husky** - Git hooks for automation
+- **Puppeteer** - Automated resume PDF generation
+- **tw-animate-css** - Animation utilities for Tailwind
+
+<Warning>
+The project uses a precommit hook that generates a resume PDF. Ensure Puppeteer dependencies are installed if you encounter issues during commits.
+</Warning>
+
+## Available scripts
+
+After installation, you can use these scripts:
+
+| Script | Command | Description |
+|--------|---------|-------------|
+| **dev** | `pnpm dev` | Start development server |
+| **build** | `pnpm build` | Build for production |
+| **start** | `pnpm start` | Start production server |
+| **lint** | `pnpm lint` | Run ESLint |
+
+## Troubleshooting
+
+### Port already in use
+
+If port 3000 is already in use, you can specify a different port:
+
+```bash
+pnpm dev -- -p 3001
+```
+
+### Type errors with React 19
+
+The project uses React 19.2.7 with specific type overrides. If you encounter type errors, ensure your `node_modules` are up to date:
+
+```bash
+rm -rf node_modules
+pnpm install
+```
+
+### Puppeteer installation issues
+
+If Puppeteer fails to install or run, you may need to install additional system dependencies. On Ubuntu/Debian:
+
+```bash
+sudo apt-get install -y chromium-browser
+```
+
+## Next steps
+
+Now that you have the project installed, learn how to configure it for your needs:
+
+<Card title="Configuration" icon="settings" href="/development/configuration">
+  Customize Next.js, Tailwind, and TypeScript settings
+</Card>

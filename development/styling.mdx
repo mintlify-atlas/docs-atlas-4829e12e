@@ -1,0 +1,312 @@
+---
+title: Customizing styles
+description: Learn how to customize colors, themes, and visual styles in your portfolio website
+---
+
+You can customize the visual appearance of your portfolio by modifying CSS variables, brand colors, and theme configurations.
+
+## Theme structure
+
+The portfolio uses a dual-theme system with light and dark modes. All theme values are defined in `src/styles/globals.css` using CSS custom properties.
+
+### Brand colors
+
+The site uses five primary brand colors defined as CSS variables in `src/styles/globals.css:68-73`:
+
+```css globals.css
+:root {
+  --brand-navy: #001524;
+  --brand-teal: #15616d;
+  --brand-cream: #ffecd1;
+  --brand-orange: #ff7d00;
+  --brand-brown: #78290f;
+}
+```
+
+<Steps>
+  <Step title="Locate the brand colors">
+    Open `src/styles/globals.css` and find the `:root` selector around line 67.
+  </Step>
+  
+  <Step title="Update the hex values">
+    Replace the hex color values with your desired colors. Make sure to keep the variable names consistent.
+  </Step>
+  
+  <Step title="Update dark mode variants">
+    If needed, update the dark mode overrides in the `.dark` selector (lines 139-141) to ensure proper contrast.
+  </Step>
+</Steps>
+
+<Tip>
+The brand colors are also used in the ASCII wave animation. If you change these colors, the animation will automatically reflect your new color palette.
+</Tip>
+
+## Theme tokens
+
+The portfolio uses semantic color tokens that automatically adapt to light and dark modes.
+
+### Light mode tokens
+
+Defined in the `:root` selector (`src/styles/globals.css:67-105`):
+
+<CodeGroup>
+```css Background colors
+--background: oklch(1 0 0);      /* Pure white */
+--foreground: oklch(0.145 0 0);  /* Near black */
+--card: oklch(1 0 0);            /* White cards */
+```
+
+```css Interactive elements
+--primary: oklch(0.205 0 0);           /* Dark primary */
+--primary-foreground: oklch(0.985 0 0); /* Light text */
+--secondary: oklch(0.97 0 0);          /* Light secondary */
+--accent: oklch(0.97 0 0);             /* Light accent */
+```
+
+```css Borders and inputs
+--border: oklch(0.922 0 0);  /* Light gray border */
+--input: oklch(0.922 0 0);   /* Input border color */
+--ring: oklch(0.708 0 0);    /* Focus ring color */
+```
+</CodeGroup>
+
+### Dark mode tokens
+
+Defined in the `.dark` selector (`src/styles/globals.css:107-142`):
+
+```css globals.css
+.dark {
+  --background: #1a1a1a;   /* Dark background */
+  --foreground: #f5f5f5;   /* Light text */
+  --card: #242424;         /* Slightly lighter cards */
+  --border: #3a3a3a;       /* Subtle borders */
+  /* ... more tokens */
+}
+```
+
+<Note>
+The portfolio uses the OKLCH color space for better perceptual uniformity. Light mode uses OKLCH values, while dark mode uses hex values for compatibility.
+</Note>
+
+## Typography
+
+The site uses the Inter variable font with support for weights from 100 to 900.
+
+### Font configuration
+
+Font files are loaded via `@font-face` declarations in `src/styles/globals.css:4-19`:
+
+```css globals.css
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/Inter/Inter-VariableFont_opsz,wght.ttf") format("truetype");
+}
+```
+
+<Steps>
+  <Step title="Add your font files">
+    Place your custom font files in the `public/fonts/` directory.
+  </Step>
+  
+  <Step title="Update @font-face declarations">
+    Modify the `@font-face` rules in `globals.css` to reference your new font files.
+  </Step>
+  
+  <Step title="Update the theme token">
+    Change the `--font-sans` variable in the `@theme inline` block (line 24) to use your font family name.
+  </Step>
+</Steps>
+
+### Changing the font family
+
+Update the font family token in `src/styles/globals.css:24`:
+
+```css globals.css
+@theme inline {
+  --font-sans: "Your Custom Font", sans-serif;
+}
+```
+
+## Border radius
+
+The site uses a consistent border radius system with five size variants.
+
+### Radius configuration
+
+All radius values are calculated from a base `--radius` variable (`src/styles/globals.css:68`):
+
+```css globals.css
+:root {
+  --radius: 0.625rem; /* 10px base radius */
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);  /* 6px */
+  --radius-md: calc(var(--radius) - 2px);  /* 8px */
+  --radius-lg: var(--radius);              /* 10px */
+  --radius-xl: calc(var(--radius) + 4px);  /* 14px */
+}
+```
+
+To make the design more rounded or sharp, adjust the base `--radius` value:
+
+<CodeGroup>
+```css Sharp design
+--radius: 0.25rem; /* 4px - minimal rounding */
+```
+
+```css Moderate rounding
+--radius: 0.625rem; /* 10px - default */
+```
+
+```css Highly rounded
+--radius: 1rem; /* 16px - very rounded */
+```
+</CodeGroup>
+
+## Background effects
+
+The portfolio includes a subtle dot grid background pattern.
+
+### Dot grid customization
+
+The pattern is defined in `src/styles/globals.css:151-152`:
+
+```css globals.css
+body {
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+:is(.dark) body {
+  background-image: radial-gradient(#2a2a2a 1px, transparent 1px);
+}
+```
+
+<Steps>
+  <Step title="Adjust dot size">
+    Change the `1px` value in the `radial-gradient` to make dots larger or smaller.
+  </Step>
+  
+  <Step title="Adjust spacing">
+    Modify the `background-size` values to increase or decrease spacing between dots.
+  </Step>
+  
+  <Step title="Change dot color">
+    For light mode, the color uses the `--border` variable. For dark mode, update the hex value `#2a2a2a`.
+  </Step>
+</Steps>
+
+<Warning>
+Removing the background pattern entirely may reduce visual depth. Consider adjusting opacity or spacing instead.
+</Warning>
+
+## ASCII wave animation
+
+The homepage features an ASCII wave animation with configurable colors and behavior.
+
+### Wave configuration
+
+Animation settings are defined in `src/lib/constants.ts:19-33`:
+
+```typescript constants.ts
+export const ASCII_WAVE_CONFIG = {
+  colors: ["#001524", "#15616d", "#ff7d00", "#78290f"],
+  chars: " .:-=+*#%@",
+  height: 400,
+  fontSize: 14,
+  fontFamily: 'Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+  threshold: 0.2,
+  speed: 0.01,
+  colorCycleRate: 10,
+  
+  wave1: { x: 0.1 },
+  wave2: { y: 0.15, time: 0.5 },
+  wave3: { mix: 0.05, time: 0.2 },
+} as const;
+```
+
+### Customization options
+
+<AccordionGroup>
+  <Accordion title="Colors">
+    The `colors` array defines the gradient palette. Add or modify hex values to change the color scheme. The animation cycles through these colors based on `colorCycleRate`.
+  </Accordion>
+  
+  <Accordion title="ASCII characters">
+    The `chars` string defines the characters used from lightest to darkest. Reorder or replace characters to change the visual density pattern.
+  </Accordion>
+  
+  <Accordion title="Animation speed">
+    The `speed` value controls animation velocity. Lower values (e.g., `0.005`) create slower motion, higher values (e.g., `0.02`) increase speed.
+  </Accordion>
+  
+  <Accordion title="Wave patterns">
+    The `wave1`, `wave2`, and `wave3` objects control wave interference patterns. Adjust the numeric values to change wave behavior.
+  </Accordion>
+</AccordionGroup>
+
+## Selection and focus styles
+
+Custom selection and focus styles enhance the user experience.
+
+### Text selection
+
+Defined in `src/styles/globals.css:158-160`:
+
+```css globals.css
+::selection {
+  @apply bg-brand-teal text-white;
+}
+```
+
+Change the background color by modifying the Tailwind utility class or using a custom color:
+
+```css globals.css
+::selection {
+  background-color: var(--brand-orange);
+  color: white;
+}
+```
+
+### Focus indicators
+
+Defined in `src/styles/globals.css:162-164`:
+
+```css globals.css
+:focus-visible {
+  @apply outline-2 outline-offset-2 outline-brand-orange;
+}
+```
+
+<Tip>
+Accessible focus indicators should have at least a 3:1 contrast ratio with the background. The orange focus ring provides excellent visibility.
+</Tip>
+
+## Accessibility considerations
+
+The portfolio includes reduced motion support for users with vestibular motion disorders.
+
+### Reduced motion
+
+Defined in `src/styles/globals.css:166-175`:
+
+```css globals.css
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+```
+
+<Warning>
+Do not remove the reduced motion styles. They are essential for accessibility compliance and user comfort.
+</Warning>

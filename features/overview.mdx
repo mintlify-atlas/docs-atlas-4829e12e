@@ -1,0 +1,83 @@
+---
+title: Features overview
+description: Overview of all features in the Next.js portfolio website
+---
+
+This portfolio website showcases modern web development practices with several key features that enhance user experience and developer productivity.
+
+## Core features
+
+<CardGroup cols={2}>
+  <Card title="Theme switching" icon="moon" href="/features/theme-switching">
+    Dynamic theme system with light, dark, and system modes using React Context
+  </Card>
+  <Card title="ASCII animation" icon="wave-square" href="/features/ascii-animation">
+    Canvas-based ASCII wave animation with device fingerprinting for unique patterns
+  </Card>
+  <Card title="SEO optimization" icon="magnifying-glass" href="/features/seo-optimization">
+    Comprehensive SEO with metadata, Open Graph, structured data, and accessibility
+  </Card>
+</CardGroup>
+
+## Technology stack
+
+The website is built with:
+
+- **Next.js 14+** - App Router with server-side rendering
+- **TypeScript** - Type-safe development
+- **React 18** - Modern React features including hooks and context
+- **Tailwind CSS** - Utility-first styling
+- **Vercel Analytics** - Performance monitoring
+
+## Architecture highlights
+
+<AccordionGroup>
+  <Accordion title="Client-side state management">
+    Uses React Context API for global theme state with `useSyncExternalStore` for system preference tracking. No external state management library required.
+  </Accordion>
+  
+  <Accordion title="Performance optimizations">
+    - Canvas rendering with `devicePixelRatio` for crisp displays
+    - `requestAnimationFrame` for smooth animations
+    - LocalStorage persistence for theme preferences
+    - Efficient re-renders with proper React hooks usage
+  </Accordion>
+  
+  <Accordion title="Accessibility features">
+    - Skip to main content link
+    - ARIA labels and landmarks
+    - Semantic HTML structure
+    - Keyboard navigation support
+  </Accordion>
+</AccordionGroup>
+
+## File structure
+
+Key source files for features:
+
+```
+src/
+├── context/
+│   └── theme-context.tsx      # Theme provider and hook
+├── components/
+│   ├── ascii-wave.tsx         # ASCII animation component
+│   ├── navigation.tsx         # Navigation with theme toggle
+│   └── footer.tsx             # Footer component
+├── app/
+│   ├── layout.tsx             # Root layout with metadata
+│   └── page.tsx               # Home page with schema.org data
+└── lib/
+    └── constants.ts           # Configuration constants
+```
+
+<Note>
+Each feature is designed to be modular and reusable. You can extract components like `ThemeProvider` or `AsciiWave` for use in other projects.
+</Note>
+
+## Next steps
+
+Explore each feature in detail:
+
+1. [Theme switching](/features/theme-switching) - Learn how the theme system works
+2. [ASCII animation](/features/ascii-animation) - Understand the canvas rendering technique
+3. [SEO optimization](/features/seo-optimization) - Implement comprehensive SEO

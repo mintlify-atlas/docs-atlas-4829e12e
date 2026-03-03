@@ -1,0 +1,116 @@
+---
+title: 4YOU platform
+description: Mental health platform connecting 30+ partner psychologists with 400+ active customers through secure, type-safe architecture
+---
+
+4YOU is a production mental health platform built with Next.js 15 that connects over 30 partner psychologists with 400+ active customers. The platform features type-safe Server Actions, advanced JWT token rotation, and a custom design system.
+
+<Info>
+  This project showcases modern Next.js development with Server Actions as type-safe RPC endpoints and comprehensive security through Edge middleware.
+</Info>
+
+## Overview
+
+The platform provides a complete mental health service ecosystem, enabling users to find psychologists, book sessions, and manage their mental health journey in a secure and user-friendly environment.
+
+**Live platform**: [Visit 4YOU](https://4you.az)
+
+## Tech stack
+
+- **Next.js 15**: React framework with App Router
+- **TypeScript**: Type-safe development
+- **Server Actions**: Type-safe RPC layer
+- **Zod**: End-to-end validation
+- **shadcn/ui**: Component library
+- **TailwindCSS**: Utility-first styling
+- **Docker**: Containerization
+
+## Key features
+
+### Type-safe Server Actions
+
+Implemented Server Actions as a type-safe RPC layer:
+
+- Direct server function calls from client components
+- End-to-end type safety from database to UI
+- Zod schema validation on both server and client
+- Automatic error handling and serialization
+- Progressive enhancement support
+
+<Accordion title="Why Server Actions?">
+  Server Actions eliminate the need for separate API routes by allowing you to define server-side functions that can be called directly from client components. Combined with Zod validation, this provides a fully type-safe data flow with minimal boilerplate.
+</Accordion>
+
+### JWT token rotation
+
+Built sophisticated authentication using Edge middleware:
+
+- Automatic token refresh on 401 responses
+- HTTP-only cookie-based session storage for security
+- Edge middleware intercepts and handles token rotation
+- Seamless user experience without manual re-authentication
+- Protection against XSS attacks through HTTP-only cookies
+
+### Custom design system
+
+Developed a comprehensive design system featuring:
+
+- shadcn/ui components customized for mental health context
+- Accessible, WCAG-compliant component library
+- Consistent design tokens using TailwindCSS
+- Responsive layouts optimized for mobile and desktop
+- Dark mode support throughout the platform
+
+### Psychologist matching
+
+Core features for connecting users with mental health professionals:
+
+- Advanced filtering by specialization, availability, and language
+- Real-time availability calendar
+- Secure booking and payment processing
+- Session history and note-taking
+- Rating and review system
+
+## Technical highlights
+
+<CardGroup cols={2}>
+  <Card title="Server Actions" icon="server">
+    Type-safe RPC layer eliminates API boilerplate while maintaining full type safety from database to client
+  </Card>
+  
+  <Card title="Edge middleware" icon="shield">
+    Automatic JWT rotation at the edge ensures security without impacting performance or user experience
+  </Card>
+  
+  <Card title="Zod validation" icon="check-circle">
+    End-to-end schema validation prevents invalid data from entering the system at any layer
+  </Card>
+  
+  <Card title="Design system" icon="palette">
+    Custom shadcn/ui components provide consistent, accessible UI patterns across the entire platform
+  </Card>
+</CardGroup>
+
+## Architecture decisions
+
+The platform is built on several key architectural principles:
+
+1. **Server Actions as RPC**: Eliminates API route boilerplate while maintaining type safety and progressive enhancement
+2. **Edge-first authentication**: JWT rotation at the Edge ensures fast, secure authentication without origin server latency
+3. **Schema-driven validation**: Zod schemas define the contract between client and server, enforced at runtime
+4. **Component-driven design**: shadcn/ui provides a foundation for building consistent, accessible interfaces
+5. **Docker deployment**: Containerization ensures consistent deployment across environments
+
+<Note>
+  The combination of Server Actions, Zod validation, and Edge middleware creates a robust, type-safe architecture that prevents entire classes of bugs at compile time.
+</Note>
+
+## Security considerations
+
+Given the sensitive nature of mental health data, security is paramount:
+
+- **HTTP-only cookies**: Prevent XSS attacks by making tokens inaccessible to JavaScript
+- **Automatic token rotation**: Minimizes the window of vulnerability if a token is compromised
+- **End-to-end encryption**: All data in transit is encrypted using TLS
+- **Schema validation**: Zod prevents injection attacks by validating all user input
+- **Edge middleware**: Token refresh happens at the edge, reducing exposure to the origin server

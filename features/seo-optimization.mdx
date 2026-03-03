@@ -1,0 +1,361 @@
+---
+title: SEO optimization
+description: Document SEO features including metadata, Open Graph, structured data, and accessibility
+---
+
+The portfolio website implements comprehensive SEO optimization through Next.js metadata, Open Graph tags, JSON-LD structured data, and accessibility features.
+
+## Root layout metadata
+
+The root layout (`src/app/layout.tsx:9`) defines site-wide metadata:
+
+```typescript
+export const metadata: Metadata = {
+  title: "Ahmad Jafarov | Frontend Developer (React, React Native)",
+  description:
+    "Frontend Developer specializing in React & React Native web and mobile apps. 3+ years experience building for 100K+ users. Based in Baku, available globally.",
+  keywords: [
+    "frontend developer",
+    "react native",
+    "react",
+    "typescript",
+    "expo",
+    "next.js",
+    "baku",
+    "azerbaijan",
+    "mobile apps",
+    "web development",
+  ],
+  authors: [{ name: "Ahmad Jafarov" }],
+  creator: "Ahmad Jafarov",
+  openGraph: {
+    title: "Ahmad Jafarov | Frontend Developer (React, React Native)",
+    description:
+      "Frontend Developer specializing in React & React Native web and mobile apps. 3+ years experience building for 100K+ users. Based in Baku, available globally.",
+    type: "website",
+    locale: "en_US",
+    siteName: "Ahmad Jafarov",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ahmad Jafarov | Frontend Developer (React, React Native)",
+    description:
+      "Frontend Developer specializing in React & React Native web and mobile apps. 3+ years experience building for 100K+ users. Based in Baku, available globally.",
+  },
+};
+```
+
+<Info>
+Next.js automatically generates the appropriate meta tags from this configuration.
+</Info>
+
+### Metadata components
+
+<CardGroup cols={2}>
+  <Card title="Basic metadata" icon="file-lines">
+    Title, description, keywords, authors, and creator for general SEO
+  </Card>
+  <Card title="Open Graph" icon="share-nodes">
+    Rich previews for social media platforms (Facebook, LinkedIn, etc.)
+  </Card>
+  <Card title="Twitter Card" icon="twitter">
+    Optimized preview cards for Twitter/X posts
+  </Card>
+  <Card title="Locale info" icon="globe">
+    Language and region specification (en_US)
+  </Card>
+</CardGroup>
+
+## Page-level metadata
+
+The home page (`src/app/page.tsx:8`) extends the root metadata:
+
+```typescript
+export const metadata: Metadata = {
+  title: "Ahmad Jafarov | Frontend Developer (React, React Native) | Baku",
+  description: "Frontend Developer specializing in React & React Native web and mobile apps. 3+ years experience building for 100K+ users. Based in Baku, available globally.",
+  openGraph: {
+    title: "Ahmad Jafarov | Frontend Developer (React, React Native)",
+    description: "Frontend Developer specializing in React & React Native web and mobile apps. 3+ years experience building for 100K+ users. Based in Baku, available globally.",
+  },
+};
+```
+
+<Note>
+Page-level metadata overrides root metadata, allowing you to customize SEO for each route.
+</Note>
+
+## Structured data (JSON-LD)
+
+The site uses Schema.org structured data for enhanced search results. From `src/app/page.tsx:17`:
+
+```typescript
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Ahmad Jafarov",
+  "jobTitle": "Lead Frontend Developer / Full-stack Engineer",
+  "url": "https://ahmadjafarov.com",
+  "sameAs": [
+    "https://github.com/ahm3tj4f",
+    "https://www.linkedin.com/in/ahmad-jafarov-221734190/",
+  ],
+  "knowsAbout": [
+    "TypeScript",
+    "React Native",
+    "Expo",
+    "Next.js",
+    "React",
+    "FastAPI",
+    "Nest.js",
+    "Go",
+    "PostgreSQL",
+    "Redis",
+    "Docker",
+    "Zod",
+    "TanStack Query",
+    "React Hook Form",
+    "shadcn/ui",
+    "TailwindCSS",
+    "Mobile App Development",
+    "Full-stack Engineering",
+    "CI/CD",
+    "X.509 Certificate Authentication",
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Baku",
+    "addressCountry": "Azerbaijan",
+  },
+  "worksFor": {
+    "@type": "Organization",
+    "name": "Ferrum Capital",
+    "url": "https://www.ferrumcapital.az",
+  },
+};
+```
+
+### Injecting structured data
+
+Using Next.js Script component:
+
+```tsx
+<Script
+  id="person-schema"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+/>
+```
+
+<Tabs>
+  <Tab title="Benefits">
+    - **Rich snippets** - Enhanced search results with profile info
+    - **Knowledge graph** - Potential appearance in Google's knowledge panel
+    - **Skills visibility** - Technologies listed in search results
+    - **Organization link** - Connects to employer's entity
+  </Tab>
+  
+  <Tab title="Schema types used">
+    - `Person` - Main entity type
+    - `PostalAddress` - Location information
+    - `Organization` - Employment details
+    - `sameAs` - Social media profile links
+    - `knowsAbout` - Skills and technologies
+  </Tab>
+</Tabs>
+
+<Warning>
+Structured data must be valid JSON-LD. Use [Google's Rich Results Test](https://search.google.com/test/rich-results) to validate your markup.
+</Warning>
+
+## Semantic HTML structure
+
+The site uses proper HTML5 semantic elements:
+
+<CodeGroup>
+```tsx Sections with landmarks
+<section className="space-y-5 md:space-y-6" aria-labelledby="about-heading">
+  <h1 id="about-heading" className="...">
+    Ahmad Jafarov
+  </h1>
+  {/* content */}
+</section>
+
+<section className="space-y-5 md:space-y-6" aria-labelledby="approach-heading">
+  <h2 id="approach-heading" className="...">
+    Approach
+  </h2>
+  {/* content */}
+</section>
+```
+
+```tsx Main content area
+<main id="main-content" className="flex-1">
+  {children}
+</main>
+```
+
+```tsx Figure with caption
+<figure className="flex flex-col gap-2">
+  <AsciiWave />
+  <figcaption className="text-xs text-muted-foreground text-center font-mono">
+    (Here's a fun ASCII wave I made for you. You're welcome.)
+  </figcaption>
+</figure>
+```
+</CodeGroup>
+
+## Accessibility features
+
+Comprehensive accessibility implementation:
+
+### Skip to main content link
+
+From `src/app/layout.tsx:52`:
+
+```tsx
+<a
+  href="#main-content"
+  className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-brand-orange focus:text-white focus:rounded-md focus:font-medium"
+>
+  Skip to main content
+</a>
+```
+
+<Info>
+This link is hidden by default (`sr-only`) but becomes visible when focused, allowing keyboard users to skip navigation.
+</Info>
+
+### ARIA labels and landmarks
+
+<Accordion title="External links">
+  All external links include descriptive `aria-label` attributes:
+  
+  ```tsx
+  <ExternalLink
+    href={ExternalLinks.FerrumCapital}
+    ariaLabel="Ferrum Capital website"
+  >
+    Ferrum Capital
+  </ExternalLink>
+  ```
+</Accordion>
+
+<Accordion title="Canvas accessibility">
+  The ASCII wave canvas includes proper role and label:
+  
+  ```tsx
+  <canvas 
+    ref={canvasRef} 
+    className="block" 
+    role="img" 
+    aria-label="Animated ASCII wave showing colorful character patterns" 
+  />
+  ```
+</Accordion>
+
+<Accordion title="Heading hierarchy">
+  Proper heading structure with `h1` → `h2` progression:
+  
+  ```tsx
+  <h1 id="about-heading" className="...">
+    Ahmad Jafarov
+  </h1>
+  
+  <h2 id="approach-heading" className="...">
+    Approach
+  </h2>
+  ```
+</Accordion>
+
+### Language attribute
+
+```tsx
+<html lang="en" suppressHydrationWarning>
+```
+
+The `lang="en"` attribute helps screen readers and translation tools.
+
+## Additional optimizations
+
+<CardGroup cols={2}>
+  <Card title="Vercel Analytics" icon="chart-line">
+    Performance monitoring with `@vercel/analytics/react`
+  </Card>
+  <Card title="Font optimization" icon="font">
+    Uses `antialiased` class for improved text rendering
+  </Card>
+  <Card title="Responsive design" icon="mobile">
+    Mobile-first with `md:` breakpoints for larger screens
+  </Card>
+  <Card title="Theme meta" icon="palette">
+    `suppressHydrationWarning` prevents dark mode flash
+  </Card>
+</CardGroup>
+
+## SEO checklist
+
+Ensure your implementation includes:
+
+- [ ] Unique, descriptive title (50-60 characters)
+- [ ] Meta description (150-160 characters)
+- [ ] Relevant keywords array
+- [ ] Open Graph tags for social sharing
+- [ ] Twitter Card metadata
+- [ ] JSON-LD structured data
+- [ ] Semantic HTML5 elements
+- [ ] Proper heading hierarchy (h1 → h2 → h3)
+- [ ] ARIA labels for interactive elements
+- [ ] Skip to main content link
+- [ ] Language attribute on `<html>`
+- [ ] Alt text for images (if applicable)
+- [ ] Valid HTML (no errors)
+
+## Testing SEO implementation
+
+Use these tools to validate your SEO:
+
+<Tabs>
+  <Tab title="Google tools">
+    - [Rich Results Test](https://search.google.com/test/rich-results) - Validate structured data
+    - [PageSpeed Insights](https://pagespeed.web.dev/) - Performance and Core Web Vitals
+    - [Mobile-Friendly Test](https://search.google.com/test/mobile-friendly) - Mobile usability
+  </Tab>
+  
+  <Tab title="Social media">
+    - [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/) - Test Open Graph tags
+    - [Twitter Card Validator](https://cards-dev.twitter.com/validator) - Preview Twitter cards
+    - [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/) - LinkedIn previews
+  </Tab>
+  
+  <Tab title="Accessibility">
+    - [WAVE](https://wave.webaim.org/) - Web accessibility evaluation
+    - [axe DevTools](https://www.deque.com/axe/devtools/) - Browser extension for a11y testing
+    - [Lighthouse](https://developers.google.com/web/tools/lighthouse) - Automated audits
+  </Tab>
+</Tabs>
+
+## Next.js metadata API
+
+Next.js provides powerful metadata APIs:
+
+```typescript
+import type { Metadata } from "next";
+
+// Static metadata
+export const metadata: Metadata = {
+  title: "...",
+  description: "...",
+};
+
+// Dynamic metadata
+export async function generateMetadata({ params }): Promise<Metadata> {
+  return {
+    title: `${params.name} | Portfolio`,
+  };
+}
+```
+
+<Note>
+The portfolio uses static metadata since content is fixed. Dynamic metadata is useful for content-driven sites.
+</Note>

@@ -1,0 +1,202 @@
+---
+title: Navigation
+description: Main navigation component with theme toggle and route highlighting
+---
+
+The `Navigation` component provides the main navigation menu for the portfolio website. It includes route links with active state highlighting and a theme toggle button.
+
+## Features
+
+- Responsive layout (column on mobile, row on desktop)
+- Active route highlighting with underline decoration
+- Theme toggle with icon and label
+- Semantic HTML with proper ARIA labels
+- Built with Next.js Link for client-side routing
+
+## Usage
+
+<CodeGroup>
+```tsx Layout integration
+import { Navigation } from "@/components/navigation";
+
+export default function RootLayout({ children }) {
+  return (
+    <div className="max-w-2xl min-h-screen mx-auto px-4 py-10 md:py-20 flex flex-col gap-12">
+      <Navigation />
+      <main id="main-content" className="flex-1">
+        {children}
+      </main>
+    </div>
+  );
+}
+```
+
+```tsx Standalone usage
+import { Navigation } from "@/components/navigation";
+
+export default function Page() {
+  return (
+    <header>
+      <Navigation />
+    </header>
+  );
+}
+```
+</CodeGroup>
+
+## Props
+
+The `Navigation` component accepts no props. It uses internal hooks and imported data.
+
+## Navigation routes
+
+Routes are defined in `@/data/navigation.ts`:
+
+```typescript
+export const routes: NavigationItem[] = [
+  { to: "/", label: "Home" },
+  { to: "/experience", label: "Experience" },
+  { to: "/projects", label: "Projects" },
+  { to: "/blog", label: "Blog" },
+];
+```
+
+## Dependencies
+
+The component requires these contexts and utilities:
+
+<ParamField path="usePathname" type="hook">
+  Next.js hook to get the current pathname for active route detection
+</ParamField>
+
+<ParamField path="useTheme" type="hook">
+  Custom hook from `@/context/theme-context` for theme state management
+</ParamField>
+
+<ParamField path="routes" type="NavigationItem[]">
+  Array of navigation items imported from `@/data/navigation`
+</ParamField>
+
+<ParamField path="cn" type="function">
+  Utility function from `@/lib/utils` for conditional class names
+</ParamField>
+
+## Theme toggle
+
+The navigation includes a theme toggle button that:
+
+1. Shows the current theme icon (Moon for dark, Sun for light)
+2. Displays the current theme label ("Dark" or "Light")
+3. Toggles between light and dark modes on click
+4. Handles system theme detection
+
+<CodeGroup>
+```tsx Theme toggle behavior
+const toggleTheme = () => {
+  if (theme === "system") {
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
+  } else {
+    setTheme(theme === "dark" ? "light" : "dark");
+  }
+};
+```
+
+```tsx Theme icon rendering
+const getThemeIcon = () => {
+  if (theme === "system") {
+    return resolvedTheme === "dark" ? (
+      <Moon className="w-4 h-4" />
+    ) : (
+      <Sun className="w-4 h-4" />
+    );
+  }
+  return theme === "dark" ? (
+    <Moon className="w-4 h-4" />
+  ) : (
+    <Sun className="w-4 h-4" />
+  );
+};
+```
+</CodeGroup>
+
+## Active route detection
+
+The component highlights the active route using pathname comparison:
+
+```typescript
+const isActive = to === "/" 
+  ? pathname === "/" 
+  : pathname.startsWith(to);
+```
+
+- **Home route** (`/`) - Only active when pathname is exactly `/`
+- **Other routes** - Active when pathname starts with the route path
+
+Active links receive an `underline` class for visual indication.
+
+## Styling
+
+<ParamField path="Link hover" type="string">
+  `decoration-4 hover:underline decoration-brand-orange underline-offset-6`
+  
+  Creates a 4px orange underline on hover with 6px offset
+</ParamField>
+
+<ParamField path="Active link" type="string">
+  `underline` class is added when route is active
+</ParamField>
+
+<ParamField path="Responsive layout" type="string">
+  - Mobile: `flex-col-reverse` (toggle above, links below)
+  - Desktop: `flex-row` (links left, toggle right)
+</ParamField>
+
+## Accessibility
+
+The navigation implements several accessibility features:
+
+```tsx
+<nav aria-label="Main navigation">
+  <ul className="flex md:gap-8 gap-2 md:text-lg font-medium">
+    {routes.map(({ to, label }) => (
+      <li key={to}>
+        <Link href={to} className={cn(/* ... */)}>
+          {label}
+        </Link>
+      </li>
+    ))}
+  </ul>
+  <button
+    onClick={toggleTheme}
+    aria-label={`Switch to ${resolvedTheme === "dark" ? "light" : "dark"} mode`}
+  >
+    {getThemeIcon()}
+    <span>{getThemeLabel()}</span>
+  </button>
+</nav>
+```
+
+- Semantic `nav` element with `aria-label`
+- List structure for navigation items
+- Descriptive `aria-label` on theme toggle button
+
+## Example output
+
+<Tabs>
+  <Tab title="Desktop">
+    ```
+    [Home] [Experience] [Projects] [Blog]     [☀️ Light]
+    ```
+  </Tab>
+  <Tab title="Mobile">
+    ```
+    [☀️ Light]
+    
+    [Home] [Experience] [Projects] [Blog]
+    ```
+  </Tab>
+</Tabs>
+
+## Source location
+
+`src/components/navigation.tsx:1-77`

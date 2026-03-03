@@ -1,0 +1,206 @@
+---
+title: Theme switching
+description: Document the theme switching implementation using React Context and system preferences
+---
+
+The theme system provides three modes: light, dark, and system. It uses React Context for state management and syncs with system preferences using `useSyncExternalStore`.
+
+## Implementation
+
+The theme system is implemented in `src/context/theme-context.tsx` using a custom provider and hook.
+
+### Type definitions
+
+```typescript
+type Theme = "light" | "dark" | "system";
+
+interface ThemeContextType {
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
+  resolvedTheme: "light" | "dark";
+}
+```
+
+<Info>
+The `resolvedTheme` always returns either "light" or "dark" by resolving the "system" preference to the actual OS theme.
+</Info>
+
+### System theme detection
+
+The implementation uses `matchMedia` to detect system color scheme preferences:
+
+```typescript
+const getSystemTheme = () => {
+  if (typeof window === "undefined") return "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+};
+```
+
+<Tabs>
+  <Tab title="Subscribe function">
+    ```typescript
+    function subscribe(callback: () => void) {
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      mediaQuery.addEventListener("change", callback);
+      return () => mediaQuery.removeEventListener("change", callback);
+    }
+    ```
+    
+    This function listens for system theme changes and triggers re-renders when the OS theme changes.
+  </Tab>
+  
+  <Tab title="Snapshot functions">
+    ```typescript
+    function getSnapshot() {
+      return getSystemTheme();
+    }
+
+    function getServerSnapshot() {
+      return "light";
+    }
+    ```
+    
+    These provide the current theme state for client and server rendering.
+  </Tab>
+</Tabs>
+
+## ThemeProvider component
+
+The provider manages theme state and syncs with localStorage and the DOM:
+
+```typescript
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const [mounted, setMounted] = useState(false);
+  const systemTheme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+
+  const [theme, setThemeState] = useState<Theme>("light");
+
+  useEffect(() => {
+    const stored = localStorage.getItem("theme") as Theme | null;
+    if (stored) {
+      setThemeState(stored);
+    }
+    setMounted(true);
+  }, []);
+
+  const resolvedTheme: "light" | "dark" =
+    theme === "system" ? (systemTheme as "light" | "dark") : theme;
+
+  useEffect(() => {
+    if (!mounted) return;
+
+    const root = document.documentElement;
+    if (resolvedTheme === "dark") {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+  }, [resolvedTheme, mounted]);
+
+  const setTheme = useCallback((newTheme: Theme) => {
+    setThemeState(newTheme);
+    localStorage.setItem("theme", newTheme);
+  }, []);
+
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme, resolvedTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+```
+
+### Key features
+
+<CardGroup cols={2}>
+  <Card title="Hydration safety" icon="droplet">
+    Uses `mounted` state to prevent hydration mismatches between server and client
+  </Card>
+  <Card title="System sync" icon="sync">
+    `useSyncExternalStore` keeps theme in sync with OS preferences in real-time
+  </Card>
+  <Card title="Persistence" icon="floppy-disk">
+    LocalStorage persists user preference across sessions
+  </Card>
+  <Card title="DOM updates" icon="code">
+    Automatically adds/removes `dark` class on `<html>` element for Tailwind
+  </Card>
+</CardGroup>
+
+## useTheme hook
+
+Consume the theme context with a custom hook:
+
+```typescript
+export function useTheme() {
+  const context = useContext(ThemeContext);
+  if (context === undefined) {
+    throw new Error("useTheme must be used within a ThemeProvider");
+  }
+  return context;
+}
+```
+
+<Warning>
+The hook throws an error if used outside of `ThemeProvider`. Always wrap your app with the provider.
+</Warning>
+
+## Usage in components
+
+Access theme state and setter in any component:
+
+```typescript
+import { useTheme } from "@/context/theme-context";
+
+function ThemeToggle() {
+  const { theme, setTheme, resolvedTheme } = useTheme();
+  
+  return (
+    <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+      Current: {resolvedTheme}
+    </button>
+  );
+}
+```
+
+## Integration with layout
+
+The provider is added at the root layout level in `src/app/layout.tsx:51`:
+
+```tsx
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body className="antialiased bg-background text-foreground">
+        <ThemeProvider>
+          {/* app content */}
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+<Note>
+The `suppressHydrationWarning` prop on `<html>` prevents warnings from the `dark` class being added client-side.
+</Note>
+
+## Why useSyncExternalStore?
+
+`useSyncExternalStore` is the React 18+ recommended approach for subscribing to external data sources:
+
+- **Concurrent rendering safe** - Works correctly with React's concurrent features
+- **SSR compatible** - Separate server and client snapshots prevent hydration issues
+- **Automatic re-renders** - Triggers updates when system theme changes
+- **Memory efficient** - Properly cleans up event listeners
+
+## Complete flow
+
+1. User sets theme via `setTheme("dark")`
+2. Theme saved to `localStorage.setItem("theme", "dark")`
+3. `resolvedTheme` computed ("dark" in this case)
+4. `useEffect` adds `dark` class to `<html>` element
+5. Tailwind applies dark mode styles
+6. If user selects "system", theme syncs with OS preference via `matchMedia`

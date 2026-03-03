@@ -1,0 +1,307 @@
+---
+title: Managing content
+description: Learn how to add and modify work experiences, blog posts, and other content in your portfolio
+---
+
+You can manage all portfolio content through TypeScript data files located in the `src/data/` directory. This approach provides type safety and excellent developer experience.
+
+## Work experiences
+
+Experiences are defined in `src/data/experiences.tsx` as an array of `ExperienceItem` objects.
+
+### Experience data structure
+
+The `ExperienceItem` interface is defined in `src/types/index.ts:3-10`:
+
+```typescript index.ts
+export interface ExperienceItem {
+  role: string;              // Job title or position
+  company: string;           // Company or organization name
+  companyUrl?: string;       // Optional company website URL
+  period: string;            // Employment period (e.g., "August 2023 - Present")
+  location: string;          // City, country, or "Remote"
+  description: (string | ReactNode)[]; // Array of description points
+}
+```
+
+<Note>
+The `description` field accepts both plain strings and React components, allowing you to include formatted text, links, and other JSX elements.
+</Note>
+
+### Adding a new experience
+
+<Steps>
+  <Step title="Open the experiences file">
+    Navigate to `src/data/experiences.tsx` in your editor.
+  </Step>
+  
+  <Step title="Add your experience object">
+    Insert a new object into the `experiences` array following the structure below.
+  </Step>
+  
+  <Step title="Add company URL to constants (optional)">
+    If you're linking to a company website, add the URL to `src/lib/constants.ts` in the `ExternalLinks` object.
+  </Step>
+  
+  <Step title="Save and verify">
+    The changes will hot-reload automatically. Check your browser to verify the new experience appears correctly.
+  </Step>
+</Steps>
+
+### Example experience entry
+
+```tsx experiences.tsx
+{
+  role: "Senior Frontend Engineer",
+  company: "TechCorp Inc.",
+  companyUrl: ExternalLinks.TechCorp,
+  period: "January 2025 - Present",
+  location: "Remote",
+  description: [
+    <>Architected and implemented a design system used across 12 product teams, reducing UI development time by 40%.</>,
+    <>Led migration from JavaScript to TypeScript, improving code quality and reducing production bugs by 35%.</>,
+    <>Mentored 5 junior developers through code reviews, pair programming, and technical documentation.</>,
+    <>Implemented CI/CD pipelines with automated testing, reducing deployment time from hours to minutes.</>,
+  ],
+}
+```
+
+<Tip>
+Use JSX fragments (`<>...</>`) in the description array to enable rich formatting with links, bold text, and other inline elements.
+</Tip>
+
+### Adding links to descriptions
+
+You can include hyperlinks and formatted text in experience descriptions:
+
+```tsx experiences.tsx
+{
+  role: "Full Stack Developer",
+  company: "StartupXYZ",
+  period: "March 2024 - December 2024",
+  location: "San Francisco, CA",
+  description: [
+    <>Built a real-time collaboration platform using <strong>Next.js</strong>, <strong>Socket.io</strong>, and <strong>PostgreSQL</strong>.</>,
+    <>Integrated with <a href="https://stripe.com" target="_blank" rel="noopener noreferrer">Stripe</a> for payment processing, handling $500K+ in transactions.</>,
+    <>Reduced API response time by 60% through database query optimization and caching strategies.</>,
+  ],
+}
+```
+
+## External links
+
+All external URLs are centralized in `src/lib/constants.ts` for easy maintenance and type safety.
+
+### ExternalLinks object
+
+Defined in `src/lib/constants.ts:1-17`:
+
+```typescript constants.ts
+export const ExternalLinks = {
+  FerrumCapital: "https://www.ferrumcapital.az",
+  FerrumCapitalCustomerApp: "https://apps.apple.com/az/app/ferrum-capital/id6741802393",
+  ThreeBlueOneBrown: "https://www.3blue1brown.com/",
+  TikTokGuitar: "https://www.tiktok.com/@ahm3tj4f/video/7519449555486690568",
+  Goodreads: "https://www.goodreads.com/user/show/63307480-ahmad-jafarov",
+  "4You": "https://4youcare.com/",
+  InnoSight: "https://www.linkedin.com/company/innosight-llc/",
+  CodeMarkGithub: "https://github.com/Ahm3tJ4f/codemark",
+  CodeMarkDemo: "https://ahm3tj4f.github.io/codemark/",
+  SongPalBot: "https://t.me/songpal_bot",
+  SongPalBotGithub: "https://github.com/Ahm3tJ4f/song-pal-bot",
+  PixelProCRM: "https://github.com/Ahm3tJ4f/pixelpro-crm",
+} as const;
+```
+
+### Adding a new external link
+
+<Steps>
+  <Step title="Open constants file">
+    Navigate to `src/lib/constants.ts`.
+  </Step>
+  
+  <Step title="Add to ExternalLinks object">
+    Insert a new key-value pair with a descriptive name and the full URL.
+  </Step>
+  
+  <Step title="Use in data files">
+    Import and reference the link in your projects or experiences: `ExternalLinks.YourNewLink`.
+  </Step>
+</Steps>
+
+<CodeGroup>
+```typescript Add a company website
+export const ExternalLinks = {
+  // ... existing links
+  MyCompany: "https://www.mycompany.com",
+} as const;
+```
+
+```typescript Add a project demo
+export const ExternalLinks = {
+  // ... existing links
+  MyProjectDemo: "https://demo.myproject.dev",
+  MyProjectGithub: "https://github.com/username/my-project",
+} as const;
+```
+</CodeGroup>
+
+<Warning>
+The `as const` assertion is important for TypeScript type safety. Do not remove it when adding new links.
+</Warning>
+
+## Experience best practices
+
+### Writing effective descriptions
+
+Follow these guidelines for compelling experience descriptions:
+
+<CardGroup cols={2}>
+  <Card title="Start with action verbs">
+    Use strong verbs like "Architected," "Implemented," "Led," "Reduced," "Increased" to demonstrate impact.
+  </Card>
+  
+  <Card title="Quantify achievements">
+    Include specific metrics: "Reduced load time by 40%," "Managed team of 5," "Handled 100K+ daily requests."
+  </Card>
+  
+  <Card title="Highlight technologies">
+    Mention specific frameworks, tools, and methodologies you used to showcase your technical breadth.
+  </Card>
+  
+  <Card title="Focus on impact">
+    Emphasize business outcomes and user benefits rather than just listing tasks you performed.
+  </Card>
+</CardGroup>
+
+### Description length
+
+Aim for 3-5 description points per experience:
+
+- **Too few (1-2):** May not adequately convey the scope of your work
+- **Ideal (3-5):** Provides comprehensive overview without overwhelming readers
+- **Too many (6+):** Can make the section feel cluttered and reduce readability
+
+### Chronological order
+
+List experiences in reverse chronological order (most recent first):
+
+```tsx experiences.tsx
+export const experiences: ExperienceItem[] = [
+  {
+    // Most recent job (2025-present)
+  },
+  {
+    // Previous job (2023-2024)
+  },
+  {
+    // Earlier job (2021-2023)
+  },
+];
+```
+
+## Updating existing content
+
+You can modify existing experiences at any time while maintaining type safety.
+
+### Editing an experience
+
+<Steps>
+  <Step title="Locate the experience">
+    Open `src/data/experiences.tsx` and find the experience object you want to modify.
+  </Step>
+  
+  <Step title="Update fields">
+    Modify any fields like `role`, `period`, `location`, or `description` items.
+  </Step>
+  
+  <Step title="Update the period for ongoing roles">
+    If you're still employed, keep the period as `"Start Date - Present"`. When you leave, update it to include the end date.
+  </Step>
+</Steps>
+
+### Example: Updating employment period
+
+```tsx experiences.tsx
+// Before (while still employed)
+{
+  role: "Frontend Developer",
+  company: "Ferrum Capital",
+  period: "August 2023 - Present",
+  // ...
+}
+
+// After (when employment ends)
+{
+  role: "Frontend Developer",
+  company: "Ferrum Capital",
+  period: "August 2023 - March 2026",
+  // ...
+}
+```
+
+## Real-world examples
+
+Here are complete, production-ready examples from the portfolio.
+
+### Example 1: Frontend role with multiple responsibilities
+
+```tsx experiences.tsx
+{
+  role: "Front-End Developer",
+  company: "Ferrum Capital",
+  companyUrl: ExternalLinks.FerrumCapital,
+  period: "August 2023 - Present",
+  location: "Baku, Azerbaijan",
+  description: [
+    <>Leading frontend development on internal systems (CRMs, ERP tools) and public mobile applications, taking projects from architecture to delivery.</>,
+    <>Documented technical specifications, API integrations, and architectural decisions for all frontend projects.</>,
+    <>Conducted code reviews, established coding standards, and implemented best practices for code quality.</>,
+    <>Managed workloads and coordinated between developers, aligned with backend teams for seamless integration.</>,
+    <>Implemented CI/CD pipelines for automated testing and deployment workflows.</>,
+  ],
+}
+```
+
+### Example 2: Full-stack role with specific technologies
+
+```tsx experiences.tsx
+{
+  role: "Software Developer",
+  company: "InnoSight LLC",
+  companyUrl: ExternalLinks.InnoSight,
+  period: "March 2024 – April 2025",
+  location: "Baku, Azerbaijan",
+  description: [
+    <>Developed the frontend of an internal office room booking system with a Google Calendar–like UI and an admin panel for employee management using Next.js 14, server actions, React Hook Form, and Zod for server/client validation.</>,
+    <>Designed and implemented a CRM platform for citizen onboarding with integrated video calls and browser/backend-level face detection for identity verification.</>,
+    <>Built Swift and Kotlin SDKs for face liveness detection; implemented FastAPI backend with Google MediaPipe and authenticated WebSocket connection for real-time active liveness verification.</>,
+  ],
+}
+```
+
+## Type safety benefits
+
+Using TypeScript for content management provides several advantages:
+
+<AccordionGroup>
+  <Accordion title="Compile-time validation">
+    If you misspell a field name or use the wrong type, TypeScript will catch the error before the code runs.
+  </Accordion>
+  
+  <Accordion title="Autocomplete support">
+    Your editor will suggest available fields and provide inline documentation as you type.
+  </Accordion>
+  
+  <Accordion title="Refactoring safety">
+    If you rename a field in the interface, TypeScript will flag all locations that need updating.
+  </Accordion>
+  
+  <Accordion title="External link validation">
+    Using the `ExternalLinks` object ensures you can't reference a non-existent link.
+  </Accordion>
+</AccordionGroup>
+
+<Tip>
+Run `npm run build` or `npm run type-check` periodically to verify all content changes are type-safe before deploying.
+</Tip>

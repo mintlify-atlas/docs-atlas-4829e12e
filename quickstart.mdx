@@ -1,80 +1,257 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: Quick start
+description: Get your Next.js portfolio running locally in under 5 minutes
 ---
 
-## Get started in three steps
+## Prerequisites
 
-Get your documentation site running locally and make your first customization.
+Before you begin, make sure you have the following installed on your machine:
 
-### Step 1: Set up your local environment
+- **Node.js** 20.x or higher
+- A package manager: **pnpm** (recommended), npm, yarn, or bun
+- **Git** for version control
 
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
+<Note>
+  This project was built with pnpm, but all package managers are supported. The examples below show multiple options.
+</Note>
+
+## Get the code
+
+<Steps>
+  <Step title="Clone the repository">
+    First, clone the portfolio repository to your local machine:
     
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
+    <CodeGroup>
+    ```bash SSH
+    git clone git@github.com:ahm3tj4f/portfolio.git
+    cd portfolio
+    ```
     
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 2: Deploy your changes
-
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
+    ```bash HTTPS
+    git clone https://github.com/ahm3tj4f/portfolio.git
+    cd portfolio
+    ```
+    </CodeGroup>
     
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
+    <Info>
+      Replace the repository URL with your own fork if you've already forked the project.
+    </Info>
+  </Step>
+  
+  <Step title="Install dependencies">
+    Install all required packages using your preferred package manager:
+    
+    <CodeGroup>
+    ```bash pnpm
+    pnpm install
+    ```
+    
+    ```bash npm
+    npm install
+    ```
+    
+    ```bash yarn
+    yarn install
+    ```
+    
+    ```bash bun
+    bun install
+    ```
+    </CodeGroup>
+    
+    This will install all dependencies listed in `package.json`, including:
+    - Next.js framework and React
+    - UI libraries (Radix UI, Lucide icons)
+    - 3D graphics tools (Three.js, React Three Fiber)
+    - MDX processing for blog posts
+    - Development tools (TypeScript, ESLint, Husky)
+  </Step>
+  
+  <Step title="Start the development server">
+    Run the local development server:
+    
+    <CodeGroup>
+    ```bash pnpm
+    pnpm dev
+    ```
+    
+    ```bash npm
+    npm run dev
+    ```
+    
+    ```bash yarn
+    yarn dev
+    ```
+    
+    ```bash bun
+    bun dev
+    ```
+    </CodeGroup>
+    
+    The development server will start on `http://localhost:3000`.
+  </Step>
+  
+  <Step title="Open in your browser">
+    Navigate to [http://localhost:3000](http://localhost:3000) to see your portfolio website.
+    
+    You should see the homepage with:
+    - A hero section with the developer's name
+    - An about section describing their experience
+    - An animated ASCII wave component
+    - An approach section detailing their philosophy
+    
+    <Info>
+      The page automatically refreshes when you make changes to the code. Try editing `src/app/page.tsx` to see live updates.
+    </Info>
+  </Step>
+</Steps>
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
+## Available scripts
 
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
+The portfolio comes with several npm scripts defined in `package.json`:
 
-### Step 3: Go live
+| Script | Command | Description |
+|--------|---------|-------------|
+| `dev` | `next dev` | Starts the development server with hot reload |
+| `build` | `next build` | Creates an optimized production build |
+| `start` | `next start` | Runs the production server (requires build first) |
+| `lint` | `eslint` | Runs ESLint to check code quality |
 
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
+<Note>
+  The project includes Husky for Git hooks. A `precommit` hook automatically generates a PDF version of the resume before each commit.
+</Note>
+
+## Project structure
+
+Here's a quick overview of the key files and directories:
+
+```plaintext
+├── src/
+│   ├── app/                    # Next.js App Router pages
+│   │   ├── layout.tsx          # Root layout with navigation and footer
+│   │   ├── page.tsx            # Homepage component
+│   │   └── ...                 # Other pages
+│   ├── components/             # Reusable UI components
+│   ├── styles/                 # Global CSS and styles
+│   └── lib/                    # Utilities and constants
+├── public/                     # Static assets
+├── package.json                # Dependencies and scripts
+├── next.config.ts              # Next.js configuration
+└── tailwind.config.ts          # TailwindCSS configuration
+```
+
+## Verify your setup
+
+To ensure everything is working correctly:
+
+<Steps>
+  <Step title="Check the homepage">
+    Verify that `http://localhost:3000` displays the portfolio homepage with all sections rendering properly.
+  </Step>
+  
+  <Step title="Test hot reload">
+    Open `src/app/page.tsx` and modify some text. The browser should automatically refresh with your changes.
+  </Step>
+  
+  <Step title="Run the linter">
+    Execute the lint command to verify code quality:
+    
+    <CodeGroup>
+    ```bash pnpm
+    pnpm lint
+    ```
+    
+    ```bash npm
+    npm run lint
+    ```
+    </CodeGroup>
+  </Step>
+  
+  <Step title="Build for production">
+    Test that the production build works:
+    
+    <CodeGroup>
+    ```bash pnpm
+    pnpm build
+    pnpm start
+    ```
+    
+    ```bash npm
+    npm run build
+    npm start
+    ```
+    </CodeGroup>
+    
+    The optimized site will be available at `http://localhost:3000`.
+  </Step>
+</Steps>
 
 ## Next steps
 
-Now that you have your docs running, explore these key features:
+Now that your portfolio is running locally, you're ready to:
 
 <CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
+  <Card
+    title="Customize your content"
+    icon="pencil"
+    href="/development/content-management"
+  >
+    Update personal information, projects, and blog posts
+  </Card>
+  
+  <Card
+    title="Configure the theme"
+    icon="palette"
+    href="/development/styling"
+  >
+    Adjust colors, fonts, and styling to match your brand
+  </Card>
+  
+  <Card
+    title="Add components"
+    icon="puzzle-piece"
+    href="/components/overview"
+  >
+    Learn about the UI components included in the template
+  </Card>
+  
+  <Card
+    title="Deploy to production"
+    icon="rocket"
+    href="/development/deployment"
+  >
+    Ship your portfolio to Vercel or another hosting platform
+  </Card>
 </CardGroup>
 
-<Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
-</Note>
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Port 3000 is already in use">
+    If you see an error that port 3000 is already in use, you can:
+    
+    - Stop the other process using port 3000
+    - Or run Next.js on a different port:
+    
+    ```bash
+    pnpm dev -p 3001
+    ```
+  </Accordion>
+  
+  <Accordion title="Module not found errors">
+    If you see module not found errors:
+    
+    1. Delete `node_modules` and package lock files
+    2. Reinstall dependencies: `pnpm install`
+    3. Clear Next.js cache: `rm -rf .next`
+    4. Restart the dev server
+  </Accordion>
+  
+  <Accordion title="TypeScript errors in editor">
+    If your editor shows TypeScript errors:
+    
+    1. Ensure you have TypeScript installed globally or in the project
+    2. Restart your TypeScript server in VS Code: Cmd/Ctrl + Shift + P → "Restart TypeScript Server"
+    3. Check that your editor is using the workspace TypeScript version
+  </Accordion>
+</AccordionGroup>

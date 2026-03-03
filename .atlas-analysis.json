@@ -1,0 +1,101 @@
+{
+  "projectType": "frontend",
+  "projectName": "Ahmad Jafarov Portfolio",
+  "projectDescription": "Personal portfolio website showcasing frontend development work, projects, and experience built with Next.js 16 and React 19.",
+  "theme": "palm",
+  "primaryColor": "#ff7d00",
+  "lightColor": "#15616d",
+  "darkColor": "#001524",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Features",
+            "pages": [
+              "features/overview",
+              "features/theme-switching",
+              "features/ascii-animation",
+              "features/seo-optimization"
+            ]
+          },
+          {
+            "group": "Components",
+            "pages": [
+              "components/overview",
+              "components/ascii-wave",
+              "components/navigation",
+              "components/footer",
+              "components/ui-components"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Projects",
+        "groups": [
+          {
+            "group": "Showcase",
+            "pages": [
+              "projects/overview",
+              "projects/ferrum-capital-mobile",
+              "projects/4you-platform",
+              "projects/pixelpro-crm",
+              "projects/song-pal-bot",
+              "projects/codemark"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Development",
+        "groups": [
+          {
+            "group": "Setup",
+            "pages": [
+              "development/installation",
+              "development/configuration",
+              "development/deployment"
+            ]
+          },
+          {
+            "group": "Customization",
+            "pages": [
+              "development/styling",
+              "development/content-management",
+              "development/adding-projects"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Next.js 16 App Router with TypeScript",
+    "Dark/Light theme switching with theme context",
+    "Custom ASCII wave animation using Canvas API",
+    "Project and experience showcase",
+    "SEO optimized with metadata and structured data",
+    "Responsive design with TailwindCSS",
+    "MDX blog support with gray-matter",
+    "Automated PDF resume generation"
+  ],
+  "publicApiSurface": [
+    "AsciiWave component",
+    "ThemeProvider context",
+    "Navigation component",
+    "Footer component",
+    "UI components (Button, Badge, ExternalLink, Dialog)",
+    "ExternalLinks constants",
+    "ASCII_WAVE_CONFIG constants",
+    "Project and Experience data structures"
+  ]
+}
